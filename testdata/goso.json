@@ -1,0 +1,1304 @@
+{
+  "kind": "customsearch#search",
+  "url": {
+    "type": "application/json",
+    "template": "https://www.googleapis.com/customsearch/v1?q={searchTerms}&num={count?}&start={startIndex?}&lr={language?}&safe={safe?}&cx={cx?}&sort={sort?}&filter={filter?}&gl={gl?}&cr={cr?}&googlehost={googleHost?}&c2coff={disableCnTwTranslation?}&hq={hq?}&hl={hl?}&siteSearch={siteSearch?}&siteSearchFilter={siteSearchFilter?}&exactTerms={exactTerms?}&excludeTerms={excludeTerms?}&linkSite={linkSite?}&orTerms={orTerms?}&dateRestrict={dateRestrict?}&lowRange={lowRange?}&highRange={highRange?}&searchType={searchType}&fileType={fileType?}&rights={rights?}&imgSize={imgSize?}&imgType={imgType?}&imgColorType={imgColorType?}&imgDominantColor={imgDominantColor?}&alt=json"
+  },
+  "queries": {
+    "request": [
+      {
+        "title": "Google Custom Search - create array in c",
+        "totalResults": "44900000",
+        "searchTerms": "create array in c",
+        "count": 10,
+        "startIndex": 1,
+        "inputEncoding": "utf8",
+        "outputEncoding": "utf8",
+        "safe": "off",
+        "cx": "631b166d4490c4ad1"
+      }
+    ],
+    "nextPage": [
+      {
+        "title": "Google Custom Search - create array in c",
+        "totalResults": "44900000",
+        "searchTerms": "create array in c",
+        "count": 10,
+        "startIndex": 11,
+        "inputEncoding": "utf8",
+        "outputEncoding": "utf8",
+        "safe": "off",
+        "cx": "631b166d4490c4ad1"
+      }
+    ]
+  },
+  "context": {
+    "title": "goso"
+  },
+  "searchInformation": {
+    "searchTime": 0.442236,
+    "formattedSearchTime": "0.44",
+    "totalResults": "44900000",
+    "formattedTotalResults": "44,900,000"
+  },
+  "items": [
+    {
+      "kind": "customsearch#result",
+      "title": "Making an Array to Hold Arrays of Character Arrays in C - Stack ...",
+      "htmlTitle": "Making an \u003cb\u003eArray\u003c/b\u003e to Hold \u003cb\u003eArrays\u003c/b\u003e of Character \u003cb\u003eArrays in C\u003c/b\u003e - Stack ...",
+      "link": "https://stackoverflow.com/questions/16091848/making-an-array-to-hold-arrays-of-character-arrays-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Apr 18, 2013 ... You could also, make the arrayOfArrays literally that. char arrayOfChars[50]; // a single array of characters char arrayOfArraysOfChars[10][50 ...",
+      "htmlSnippet": "Apr 18, 2013 \u003cb\u003e...\u003c/b\u003e You could also, \u003cb\u003emake\u003c/b\u003e the arrayOfArrays literally that. char arrayOfChars[50]; // a single \u003cb\u003earray\u003c/b\u003e of characters char arrayOfArraysOfChars[10][50&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/.../making-an-array-to-hold-arrays-of-character-a...",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../making-an-\u003cb\u003earray\u003c/b\u003e-to-hold-\u003cb\u003earray\u003c/b\u003es-of-character-\u003cb\u003ea\u003c/b\u003e...",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "Making an Array to Hold Arrays of Character Arrays in C",
+            "description": "My C is a little more than rusty at the moment, so I'm failing to create something I think should be pretty basic. Allow me to refer to character arrays as strings for this post. It will make thi..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "15",
+            "answercount": "5",
+            "name": "Making an Array to Hold Arrays of Character Arrays in C",
+            "datecreated": "2013-04-18T19:50:49",
+            "text": "My C is a little more than rusty at the moment, so I'm failing to create something I think should be pretty basic. Allow me to refer to character arrays as strings for this post. It will make...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "21",
+            "commentcount": "3",
+            "text": "You have one-too-many pointers in both of your arrays. char arrayOfChars[50]; // a single array of characters char *arrayOfArraysOfChars[10]; // array to hold multiple single arrays of characters...",
+            "datecreated": "2013-04-18T20:09:10",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "7",
+            "commentcount": "1",
+            "text": "you should learn what an array means. an array is basically a set of integer or character or anything. when you are storing a character value in an array, define it as, char array[] = {\"somestringh...",
+            "datecreated": "2013-04-18T20:25:51",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "5",
+            "text": "This example was done with turbo c+ 1.01 dos and works in the 3.0 dos version also. char * text[] = { \"message1\", \"message2\", \"message3\" };",
+            "datecreated": "2014-10-06T20:23:34",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "3",
+            "commentcount": "1",
+            "text": "Note that your examples show arrays of pointers. If you want arrays of arrays (multidimensional arrays) specify all the sizes in the array definition. char sentences[500][42]; /* sentences...",
+            "datecreated": "2013-04-18T20:28:55",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "if storing text in a .c or .h file having more than one line of text, equivalent to the idea of an array of char arrays. can do this: char * text[] = { \"message1\", \"message2\", \"message3\" };...",
+            "datecreated": "2014-09-16T02:15:24",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Daemeo"
+          },
+          {
+            "name": "Daemeo"
+          },
+          {
+            "name": "luser droog"
+          },
+          {
+            "name": "steven tahner"
+          },
+          {
+            "name": "pmg"
+          },
+          {
+            "name": "steven tahner"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "Making an Array to Hold Arrays of Character Arrays in C",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "My C is a little more than rusty at the moment, so I'm failing to create something I think should be pretty basic.\n\nAllow me to refer to character arrays as strings for this post.  It will make thi...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/16091848/making-an-array-to-hold-arrays-of-character-arrays-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "How to create an array of strings in C? - Stack Overflow",
+      "htmlTitle": "How to \u003cb\u003ecreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of strings in \u003cb\u003eC\u003c/b\u003e? - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/15161774/how-to-create-an-array-of-strings-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Mar 1, 2013 ... If you need an array of strings. There are two ways: 1. Two Dimensional Array of characters In this case, you will have to know the size of your strings ...",
+      "htmlSnippet": "Mar 1, 2013 \u003cb\u003e...\u003c/b\u003e If you need an \u003cb\u003earray\u003c/b\u003e of strings. There are two ways: 1. Two Dimensional \u003cb\u003eArray\u003c/b\u003e of characters In this case, you will have to know the size of your strings&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/questions/.../how-to-create-an-array-of-strings-in...",
+      "htmlFormattedUrl": "https://stackoverflow.com/questions/.../how-to-\u003cb\u003ecreate\u003c/b\u003e-an-\u003cb\u003earray\u003c/b\u003e-of-strings-in...",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl7zuT3cw_BBRAyhdQEbQuBgqdNHXKHIYKL8S8ly8x9L_XA9sdwSmiHs&s",
+            "width": "225",
+            "height": "225"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How to create an array of strings in C?",
+            "description": "I'm teaching myself C from a book and I am trying to create a crossword puzzle. I need to make an array of strings but keep running into problems. Also, I don't know much about array... This is the"
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "11",
+            "commentcount": "7",
+            "answercount": "4",
+            "name": "How to create an array of strings in C? [duplicate]",
+            "datecreated": "2013-03-01T15:59:39",
+            "text": "This question already has answers here: How do I create an array of strings in C? (15 answers) Closed 11 years ago. I'm teaching myself C from a book and I am trying to create a crossword puzzle....",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "17",
+            "commentcount": "0",
+            "text": "words_array[0]=word1; word_array[0] is a char, whereas word1 is a char *. Your character is not able to hold an address. An array of strings might look like it: char array[NUMBER_STRINGS][STRING_MA...",
+            "datecreated": "2013-03-01T16:01:31",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "text": "If you need an array of strings. There are two ways: 1. Two Dimensional Array of characters In this case, you will have to know the size of your strings beforehand. It looks like below: //...",
+            "datecreated": "2013-03-01T16:03:57",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "9",
+            "commentcount": "0",
+            "text": "The declaration char words_array[3]; creates an array of three characters. You seem to want to declare an array of character pointers: char *words_array[3]; You have a more serious problem...",
+            "datecreated": "2013-03-01T16:02:00",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "7",
+            "text": "You can also use malloc() to allocate memory manually: int N = 3; char **array = (char**) malloc((N+1)*sizeof(char*)); array[0] = \"fluffy\"; array[1] = \"small\"; array[2] = \"bunny\"; array[3]...",
+            "datecreated": "2013-03-01T16:08:24",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Wobblester"
+          },
+          {
+            "name": "Wobblester"
+          },
+          {
+            "name": "md5"
+          },
+          {
+            "name": "Jay"
+          },
+          {
+            "name": "Some programmer dude"
+          },
+          {
+            "name": "kamituel"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How to create an array of strings in C?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I'm teaching myself C from a book and I am trying to create a crossword puzzle. I need to make an array of strings but keep running into problems. Also, I don't know much about array...\n\nThis is the",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/15161774/how-to-create-an-array-of-strings-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "How do you make an array of structs in C? - Stack Overflow",
+      "htmlTitle": "How do you \u003cb\u003emake\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of structs in \u003cb\u003eC\u003c/b\u003e? - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "May 6, 2012 ... 10 Answers 10 ; struct{ char ; int day; int ; int numStudents=3 ; malloc(numStudents * sizeof ; 0; x \u003c numStudents; x++){ students[x].firstName=(char ...",
+      "htmlSnippet": "May 6, 2012 \u003cb\u003e...\u003c/b\u003e 10 Answers 10 ; struct{ char ; int day; int ; int numStudents=3 ; malloc(numStudents * sizeof ; 0; x &lt; numStudents; x++){ students[x].firstName=(char&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/.../how-do-you-make-an-array-of-structs-in-c",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../how-do-you-make-an-\u003cb\u003earray\u003c/b\u003e-of-structs-in-\u003cb\u003ec\u003c/b\u003e",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl7zuT3cw_BBRAyhdQEbQuBgqdNHXKHIYKL8S8ly8x9L_XA9sdwSmiHs&s",
+            "width": "225",
+            "height": "225"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How do you make an array of structs in C?",
+            "description": "I'm trying to make an array of structs where each struct represents a celestial body. I don't have that much experience with structs, which is why I decided to try to use them instead of a whole bu..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "141",
+            "commentcount": "4",
+            "answercount": "10",
+            "name": "How do you make an array of structs in C?",
+            "datecreated": "2012-05-06T04:35:23",
+            "text": "I'm trying to make an array of structs where each struct represents a celestial body. I don't have that much experience with structs, which is why I decided to try to use them instead of a...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "147",
+            "commentcount": "2",
+            "text": "Use: #include\u003cstdio.h\u003e #define n 3 struct body { double p[3]; // Position double v[3]; // Velocity double a[3]; // Acceleration double radius; double mass; }; struct body bodies[n]; int main()...",
+            "datecreated": "2012-05-06T04:47:51",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "24",
+            "commentcount": "3",
+            "text": "Another way of initializing an array of structs is to initialize the array members explicitly. This approach is useful and simple if there aren't too many struct and array members. Use the...",
+            "datecreated": "2019-01-14T10:40:47",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "23",
+            "commentcount": "6",
+            "text": "So to put it all together by using malloc(): int main(int argc, char** argv) { typedef struct{ char* firstName; char* lastName; int day; int month; int year; }STUDENT; int numStudents=3; int...",
+            "datecreated": "2014-07-02T22:20:30",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "commentcount": "1",
+            "text": "I think you could write it this way too. I am also a student, so I understand your struggle. #include \u003cstdio.h\u003e #define n 3 struct { double p[3]; // Position double v[3]; // Velocity double...",
+            "datecreated": "2015-06-08T18:48:35",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "8",
+            "text": "Move struct body bodies[n]; to after struct body { double p[3]; // Position double v[3]; // Velocity double a[3]; // Acceleration double radius; double mass; }; The rest all looks fine.",
+            "datecreated": "2012-05-06T04:41:26",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "3",
+            "text": "You can do it in a same manner as you create the array of numbers but wrap the element's values in braces like this -\u003e struct Wrestler studs[count] = { {\"John\", \"Cena\"}, {\"The\", \"Undertaker\"},...",
+            "datecreated": "2022-08-03T05:55:12",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "2",
+            "text": "Solution using pointers: #include \u003cstdio.h\u003e #include \u003cstdlib.h\u003e #define n 3 struct body { double p[3]; // Position double v[3]; // Velocity double a[3]; // Acceleration double radius; double...",
+            "datecreated": "2018-10-16T17:21:16",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "commentcount": "2",
+            "text": "That error means that the compiler is not able to find the definition of the type of your struct before the declaration of the array of structs, since you're saying you have the definition...",
+            "datecreated": "2012-05-06T04:50:44",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "0",
+            "text": "Attempting to reconstruct your program, I get struct body { double p[3];//position double v[3];//velocity double a[3];//acceleration double radius; double mass; }; #define n 9 struct body bodies[n]...",
+            "datecreated": "2023-03-24T09:06:49",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "-1",
+            "commentcount": "1",
+            "text": "I don't know who came up with this one but. YES, you can build structs containing other structs! case in point work on a flight sim requires knowing start, finish, and current locations (Latitude...",
+            "datecreated": "2023-05-02T23:08:02",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Amndeep7"
+          },
+          {
+            "name": "nims"
+          },
+          {
+            "name": "Abdel Aleem"
+          },
+          {
+            "name": "Dounchan"
+          },
+          {
+            "name": "Christakitos"
+          },
+          {
+            "name": "vrk001"
+          },
+          {
+            "name": "Yanjan. Kaf."
+          },
+          {
+            "name": "Helping Bean"
+          },
+          {
+            "name": "David"
+          },
+          {
+            "name": "Toby Speight"
+          },
+          {
+            "name": "Phoenixcomm"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How do you make an array of structs in C?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I'm trying to make an array of structs where each struct represents a celestial body.\nI don't have that much experience with structs, which is why I decided to try to use them instead of a whole bu...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "c++ - How to create an array of C-strings? - Stack Overflow",
+      "htmlTitle": "c++ - How to \u003cb\u003ecreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of \u003cb\u003eC\u003c/b\u003e-strings? - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/42321458/how-to-create-an-array-of-c-strings",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Feb 18, 2017 ... To have an array of strings you simply have an array of arrays, like char my_array_of_strings[ARRAY_SIZE][STRING_SIZE + 1];",
+      "htmlSnippet": "Feb 18, 2017 \u003cb\u003e...\u003c/b\u003e To have an \u003cb\u003earray\u003c/b\u003e of strings you simply have an \u003cb\u003earray\u003c/b\u003e of \u003cb\u003earrays\u003c/b\u003e, like char my_\u003cb\u003earray\u003c/b\u003e_of_strings[\u003cb\u003eARRAY\u003c/b\u003e_SIZE][STRING_SIZE + 1];",
+      "formattedUrl": "https://stackoverflow.com/questions/.../how-to-create-an-array-of-c-strings",
+      "htmlFormattedUrl": "https://stackoverflow.com/questions/.../how-to-\u003cb\u003ecreate\u003c/b\u003e-an-\u003cb\u003earray\u003c/b\u003e-of-\u003cb\u003ec\u003c/b\u003e-strings",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How to create an array of C-strings?",
+            "description": "So I would just like to create an array of C-strings in C++. Yes, I know that C++ uses the string data type, but what I'm working on requires me to make an array of C-strings. C-strings themselves ..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "1",
+            "answercount": "2",
+            "name": "How to create an array of C-strings?",
+            "datecreated": "2017-02-18T22:34:27",
+            "text": "So I would just like to create an array of C-strings in C++. Yes, I know that C++ uses the string data type, but what I'm working on requires me to make an array of C-strings. C-strings themselves...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "4",
+            "text": "For string literals you can just do this: const char *strings[] = { \"foo\", \"bar\", \"blech\" }; For an array of strings you want to modify you might do something more like this: char strings[3][80]...",
+            "datecreated": "2017-02-18T22:36:39",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "A C-style string is nothing more than, basically, an array of char, terminated with a '\\0'. To have an array of \"strings\" you simply have an array of arrays, like char my_array_of_strings[ARRAY_SIZ...",
+            "datecreated": "2017-02-18T22:36:52",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Galaxy"
+          },
+          {
+            "name": "Paul R"
+          },
+          {
+            "name": "Some programmer dude"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How to create an array of C-strings?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "So I would just like to create an array of C-strings in C++. Yes, I know that C++ uses the string data type, but what I'm working on requires me to make an array of C-strings. C-strings themselves ...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/42321458/how-to-create-an-array-of-c-strings"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "How to create array of fixed-length \"strings\" in C? - Stack Overflow",
+      "htmlTitle": "How to \u003cb\u003ecreate array\u003c/b\u003e of fixed-length &quot;strings&quot; in \u003cb\u003eC\u003c/b\u003e? - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/33587981/how-to-create-array-of-fixed-length-strings-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Nov 7, 2015 ... I am trying to create an array of fixed-length \"strings\" in C, but have been having a little trouble. The problem I am having is that I am getting a ...",
+      "htmlSnippet": "Nov 7, 2015 \u003cb\u003e...\u003c/b\u003e I am trying to \u003cb\u003ecreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of fixed-length &quot;strings&quot; in \u003cb\u003eC\u003c/b\u003e, but have been having a little trouble. The problem I am having is that I am getting a&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/.../how-to-create-array-of-fixed-length-strings-in...",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../how-to-\u003cb\u003ecreate\u003c/b\u003e-\u003cb\u003earray\u003c/b\u003e-of-fixed-length-strings-in...",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How to create array of fixed-length \"strings\" in C?",
+            "description": "I am trying to create an array of fixed-length \"strings\" in C, but have been having a little trouble. The problem I am having is that I am getting a segmentation fault. Here is the objective of my"
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "6",
+            "commentcount": "3",
+            "answercount": "1",
+            "name": "How to create array of fixed-length \"strings\" in C?",
+            "datecreated": "2015-11-07T21:27:35",
+            "text": "I am trying to create an array of fixed-length \"strings\" in C, but have been having a little trouble. The problem I am having is that I am getting a segmentation fault. Here is the objective...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "5",
+            "commentcount": "9",
+            "text": "Note that if your string can be 256 characters long, you need its container to be 257 bytes long, in order to add the final \\0 null character. typedef char FixedLengthString[257]; FixedLengthString...",
+            "datecreated": "2015-11-07T21:31:19",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "user3495690"
+          },
+          {
+            "name": "user3495690"
+          },
+          {
+            "name": "Cyan"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How to create array of fixed-length \"strings\" in C?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I am trying to create an array of fixed-length \"strings\" in C, but have been having a little trouble. The problem I am having is that I am getting a segmentation fault. \n\nHere is the objective of my",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/33587981/how-to-create-array-of-fixed-length-strings-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "How do I create an array of strings in C? - Stack Overflow",
+      "htmlTitle": "How do I \u003cb\u003ecreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of strings in \u003cb\u003eC\u003c/b\u003e? - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/1088622/how-do-i-create-an-array-of-strings-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Jul 6, 2009 ... There are several ways to create an array of strings in C. If all the strings are going to be the same length (or at least have the same maximum length),",
+      "htmlSnippet": "Jul 6, 2009 \u003cb\u003e...\u003c/b\u003e There are several ways to \u003cb\u003ecreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of strings in \u003cb\u003eC\u003c/b\u003e. If all the strings are going to be the same length (or at least have the same maximum length),",
+      "formattedUrl": "https://stackoverflow.com/.../how-do-i-create-an-array-of-strings-in-c",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../how-do-i-\u003cb\u003ecreate\u003c/b\u003e-an-\u003cb\u003earray\u003c/b\u003e-of-strings-in-\u003cb\u003ec\u003c/b\u003e",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How do I create an array of strings in C?",
+            "description": "I am trying to create an array of strings in C. If I use this code: char (*a[2])[14]; a[0]=\"blah\"; a[1]=\"hmm\"; gcc gives me \"warning: assignment from incompatible pointer type\". What is the cor..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "348",
+            "commentcount": "4",
+            "answercount": "15",
+            "name": "How do I create an array of strings in C?",
+            "datecreated": "2009-07-06T18:47:03",
+            "text": "I am trying to create an array of strings in C. If I use this code: char (*a[2])[14]; a[0]=\"blah\"; a[1]=\"hmm\"; gcc gives me \"warning: assignment from incompatible pointer type\". What is the...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "301",
+            "commentcount": "0",
+            "text": "If you don't want to change the strings, then you could simply do const char *a[2]; a[0] = \"blah\"; a[1] = \"hmm\"; When you do it like this you will allocate an array of two pointers to const...",
+            "datecreated": "2009-07-06T18:54:11",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "247",
+            "commentcount": "5",
+            "text": "There are several ways to create an array of strings in C. If all the strings are going to be the same length (or at least have the same maximum length), you simply declare a 2-d array of char...",
+            "datecreated": "2009-07-07T21:31:06",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "122",
+            "commentcount": "13",
+            "text": "Ack! Constant strings: const char *strings[] = {\"one\",\"two\",\"three\"}; If I remember correctly. Oh, and you want to use strcpy for assignment, not the = operator. strcpy_s is safer, but it's...",
+            "datecreated": "2009-07-06T18:49:26",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "20",
+            "commentcount": "2",
+            "text": "Here are some of your options: char a1[][14] = { \"blah\", \"hmm\" }; char* a2[] = { \"blah\", \"hmm\" }; char (*a3[])[] = { &\"blah\", &\"hmm\" }; // only since you brought up the syntax - printf(a1[0]);...",
+            "datecreated": "2009-07-06T19:21:44",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "16",
+            "commentcount": "2",
+            "text": "If you don't want to keep track of number of strings in array and want to iterate over them, just add NULL string in the end: char *strings[]={ \"one\", \"two\", \"three\", NULL }; int i=0; while(strings...",
+            "datecreated": "2017-04-06T08:49:50",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "14",
+            "text": "If the strings are static, you're best off with: const char *my_array[] = {\"eenie\",\"meenie\",\"miney\"}; While not part of basic ANSI C, chances are your environment supports the syntax. These...",
+            "datecreated": "2014-06-15T06:04:26",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "14",
+            "text": "Or you can declare a struct type, that contains a character arry(1 string), them create an array of the structs and thus a multi-element array typedef struct name { char name[100]; // 100 character...",
+            "datecreated": "2013-01-31T18:09:42",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "commentcount": "12",
+            "text": "In ANSI C: char* strings[3]; strings[0] = \"foo\"; strings[1] = \"bar\"; strings[2] = \"baz\";",
+            "datecreated": "2009-07-06T18:50:58",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "9",
+            "text": "The string literals are const char *s. And your use of parenthesis is odd. You probably mean const char *a[2] = {\"blah\", \"hmm\"}; which declares an array of two pointers to constant characters,...",
+            "datecreated": "2009-07-06T18:49:30",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "3",
+            "commentcount": "1",
+            "text": "Your code is creating an array of function pointers. Try char* a[size]; or char a[size1][size2]; instead. See wikibooks to arrays and pointers",
+            "datecreated": "2009-07-06T18:53:15",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "hello you can try this bellow : char arr[nb_of_string][max_string_length]; strcpy(arr[0], \"word\"); a nice example of using, array of strings in c if you want it #include \u003cstdio.h\u003e #include...",
+            "datecreated": "2017-12-14T20:22:31",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "Each element is a pointer to its first character const char *a[2] = {\"blah\", \"hmm\"};",
+            "datecreated": "2021-09-13T04:42:02",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "0",
+            "commentcount": "1",
+            "text": "char name[10][10] int i,j,n;//here \"n\" is number of enteries printf(\"\\nEnter size of array = \"); scanf(\"%d\",&n); for(i=0;i\u003cn;i++) { for(j=0;j\u003c1;j++) { printf(\"\\nEnter name = \"); scanf(\"%s\",&name[i]...",
+            "datecreated": "2014-09-05T14:31:41",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "0",
+            "text": "I was missing somehow more dynamic array of strings, where amount of strings could be varied depending on run-time selection, but otherwise strings should be fixed. I've ended up of coding...",
+            "datecreated": "2017-09-06T06:16:54",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "-8",
+            "commentcount": "1",
+            "text": "A good way is to define a string your self. #include \u003cstdio.h\u003e typedef char string[] int main() { string test = \"string\"; return 0; } It's really that simple.",
+            "datecreated": "2014-05-25T14:33:07",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Charles"
+          },
+          {
+            "name": "Mikael Auno"
+          },
+          {
+            "name": "John Bode"
+          },
+          {
+            "name": "mpen"
+          },
+          {
+            "name": "Faisal Vali"
+          },
+          {
+            "name": "Sergey"
+          },
+          {
+            "name": "Bryce"
+          },
+          {
+            "name": "FutureSci"
+          },
+          {
+            "name": "Noldorin"
+          },
+          {
+            "name": "dmckee --- ex-moderator kitten"
+          },
+          {
+            "name": "Dario"
+          },
+          {
+            "name": "Aominé"
+          },
+          {
+            "name": "ashkanyo"
+          },
+          {
+            "name": "Aditya"
+          },
+          {
+            "name": "TarmoPikaro"
+          },
+          {
+            "name": "IceCodr"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How do I create an array of strings in C?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I am trying to create an array of strings in C.  If I use this code:\n\nchar (*a[2])[14];\na[0]=\"blah\";\na[1]=\"hmm\";\r\ngcc gives me \"warning: assignment from incompatible pointer type\".  What is the cor...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/1088622/how-do-i-create-an-array-of-strings-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Create an array of integers property in Objective-C - Stack Overflow",
+      "htmlTitle": "\u003cb\u003eCreate\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of integers property in Objective-\u003cb\u003eC\u003c/b\u003e - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/476843/create-an-array-of-integers-property-in-objective-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Jan 24, 2009 ... It's not possible to have a C array property. Using an NSArray is the way to go. An array only stores objects, so you'd have to use NSNumber s to store your ...",
+      "htmlSnippet": "Jan 24, 2009 \u003cb\u003e...\u003c/b\u003e It&#39;s not possible to have a \u003cb\u003eC array\u003c/b\u003e property. Using an NSArray is the way to go. An \u003cb\u003earray\u003c/b\u003e only stores objects, so you&#39;d have to use NSNumber s to store your&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/.../create-an-array-of-integers-property-in-objecti...",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../\u003cb\u003ecreate\u003c/b\u003e-an-\u003cb\u003earray\u003c/b\u003e-of-integers-property-in-objecti...",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "Create an array of integers property in Objective-C",
+            "description": "I'm having troubles creating a property of an array of integers in Objective-C. I'm not sure whether this is even possible to do in Obj-C so I'm hoping someone can help me in finding out either how..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "63",
+            "commentcount": "3",
+            "answercount": "7",
+            "name": "Create an array of integers property in Objective-C",
+            "datecreated": "2009-01-24T23:01:30",
+            "text": "I'm having troubles creating a property of an array of integers in Objective-C. I'm not sure whether this is even possible to do in Obj-C so I'm hoping someone can help me in finding out either...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "30",
+            "commentcount": "3",
+            "text": "This should work: @interface MyClass { int _doubleDigits[10]; } @property(readonly) int *doubleDigits; @end @implementation MyClass - (int *)doubleDigits { return _doubleDigits; } @end",
+            "datecreated": "2009-01-25T01:38:47",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "22",
+            "commentcount": "1",
+            "text": "C arrays are not one of the supported data types for properties. See \"The Objective-C Programming Language\" in Xcode documentation, in the Declared Properties page: Supported Types You can...",
+            "datecreated": "2009-12-30T23:15:20",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "16",
+            "commentcount": "1",
+            "text": "Like lucius said, it's not possible to have a C array property. Using an NSArray is the way to go. An array only stores objects, so you'd have to use NSNumbers to store your ints. With the...",
+            "datecreated": "2012-10-12T19:10:04",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "commentcount": "1",
+            "text": "I'm just speculating: I think that the variable defined in the ivars allocates the space right in the object. This prevents you from creating accessors because you can't give an array by value...",
+            "datecreated": "2009-01-24T23:05:16",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "6",
+            "commentcount": "3",
+            "text": "This works @interface RGBComponents : NSObject { float components[8]; } @property(readonly) float * components; - (float *) components { return components; }",
+            "datecreated": "2009-12-29T09:47:54",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "You can put this in your .h file for your class and define it as property, in XCode 7: @property int (*stuffILike) [10];",
+            "datecreated": "2016-04-07T18:02:54",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "0",
+            "text": "I found all the previous answers too much complicated. I had the need to store an array of some ints as a property, and found the ObjC requirement of using a NSArray an unneeded complication...",
+            "datecreated": "2016-03-02T13:16:29",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "jebcrum"
+          },
+          {
+            "name": "robottobor"
+          },
+          {
+            "name": "lucius"
+          },
+          {
+            "name": "Tim Vermeulen"
+          },
+          {
+            "name": "Martin West"
+          },
+          {
+            "name": "Vladimir Despotovic"
+          },
+          {
+            "name": "gog"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "Create an array of integers property in Objective-C",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I'm having troubles creating a property of an array of integers in Objective-C.\nI'm not sure whether this is even possible to do in Obj-C so I'm hoping someone can help me in finding out either how...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/476843/create-an-array-of-integers-property-in-objective-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Returning an array using C - Stack Overflow",
+      "htmlTitle": "Returning an \u003cb\u003earray\u003c/b\u003e using \u003cb\u003eC\u003c/b\u003e - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/11656532/returning-an-array-using-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Jul 25, 2012 ... char *returnArray(char array []){ char returned [10]; //methods to pull values from array, interpret them, and then create new array return &( ...",
+      "htmlSnippet": "Jul 25, 2012 \u003cb\u003e...\u003c/b\u003e char *returnArray(char \u003cb\u003earray\u003c/b\u003e []){ char returned [10]; //methods to pull values from \u003cb\u003earray\u003c/b\u003e, interpret them, and then \u003cb\u003ecreate\u003c/b\u003e new \u003cb\u003earray\u003c/b\u003e return &amp;(&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/questions/11656532/returning-an-array-using-c",
+      "htmlFormattedUrl": "https://stackoverflow.com/questions/11656532/returning-an-\u003cb\u003earray\u003c/b\u003e-using-\u003cb\u003ec\u003c/b\u003e",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "Returning an array using C",
+            "description": "I am relatively new to C and I need some help with methods dealing with arrays. Coming from Java programming, I am used to being able to say int [] method() in order to return an array. However, I ..."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "229",
+            "commentcount": "5",
+            "answercount": "8",
+            "name": "Returning an array using C",
+            "datecreated": "2012-07-25T18:47:05",
+            "text": "I am relatively new to C and I need some help with methods dealing with arrays. Coming from Java programming, I am used to being able to say int [] method() in order to return an array. However,...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "317",
+            "commentcount": "28",
+            "text": "You can't return arrays from functions in C. You also can't (shouldn't) do this: char *returnArray(char array []){ char returned [10]; //methods to pull values from array, interpret them, and...",
+            "datecreated": "2012-07-25T18:51:01",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "49",
+            "commentcount": "4",
+            "text": "C's treatment of arrays is very different from Java's, and you'll have to adjust your thinking accordingly. Arrays in C are not first class objects (that is, an array expression does not retain...",
+            "datecreated": "2012-07-25T19:59:13",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "27",
+            "commentcount": "4",
+            "text": "I am not saying that this is the best solution or a preferred solution to the given problem. However, it may be useful to remember that functions can return structs. Although functions cannot...",
+            "datecreated": "2015-03-10T17:57:27",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "13",
+            "commentcount": "4",
+            "text": "You can do it using heap memory (through malloc() invocation) like other answers reported here, but you must always manage the memory (use free() function every time you call your function)....",
+            "datecreated": "2014-12-01T21:40:15",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "commentcount": "5",
+            "text": "Use this deliciously evil implementation: array.h #define IMPORT_ARRAY(TYPE) \\ \\ struct TYPE##Array { \\ TYPE* contents; \\ size_t size; \\ }; \\ \\ struct TYPE##Array new_##TYPE##Array() { \\ struct...",
+            "datecreated": "2012-07-26T02:34:41",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "9",
+            "commentcount": "9",
+            "text": "In your case, you are creating an array on the stack and once you leave the function scope, the array will be deallocated. Instead, create a dynamically allocated array and return a pointer...",
+            "datecreated": "2012-07-25T18:49:38",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "3",
+            "text": "Your method will return a local stack variable that will fail badly. To return an array, create one outside the function, pass it by address into the function, then modify it, or create an...",
+            "datecreated": "2012-07-25T18:50:56",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "You can use code like this: char *MyFunction(some arguments...) { char *pointer = malloc(size for the new array); if (!pointer) An error occurred, abort or do something about the error. return...",
+            "datecreated": "2012-07-25T18:54:20",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "user1506919"
+          },
+          {
+            "name": "Ed Swangren"
+          },
+          {
+            "name": "John Bode"
+          },
+          {
+            "name": "Indinfer"
+          },
+          {
+            "name": "mengo"
+          },
+          {
+            "name": "pyrospade"
+          },
+          {
+            "name": "Man of One Way"
+          },
+          {
+            "name": "Michael Dorgan"
+          },
+          {
+            "name": "Eric Postpischil"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "Returning an array using C",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I am relatively new to C and I need some help with methods dealing with arrays. Coming from Java programming, I am used to being able to say int [] method() in order to return an array. However, I ...",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/11656532/returning-an-array-using-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "Define Array in C - Stack Overflow",
+      "htmlTitle": "Define \u003cb\u003eArray in C\u003c/b\u003e - Stack Overflow",
+      "link": "https://stackoverflow.com/questions/9846920/define-array-in-c",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Mar 23, 2012 ... Just add them into the header as const, static arrays. /* prevents multiple, redundant includes */ /* make sure to use a symbol that is fairly ...",
+      "htmlSnippet": "Mar 23, 2012 \u003cb\u003e...\u003c/b\u003e Just add them into the header as const, static \u003cb\u003earrays\u003c/b\u003e. /* prevents multiple, redundant includes */ /* \u003cb\u003emake\u003c/b\u003e sure to use a symbol that is fairly&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/questions/9846920/define-array-in-c",
+      "htmlFormattedUrl": "https://stackoverflow.com/questions/9846920/define-\u003cb\u003earray-in-c\u003c/b\u003e",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "Define Array in C",
+            "description": "I have several 450 element character arrays (storing bitmap data to display on lcd screens.) I would like to put them under a header file and #define them, but I keep getting compilation errors. How"
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "16",
+            "commentcount": "2",
+            "answercount": "4",
+            "name": "Define Array in C",
+            "datecreated": "2012-03-23T21:49:44",
+            "text": "I have several 450 element character arrays (storing bitmap data to display on lcd screens.) I would like to put them under a header file and #define them, but I keep getting compilation errors....",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "18",
+            "commentcount": "3",
+            "text": "Well... you certainly don't need to use a define. Just add them into the header as const, static arrays. /* prevents multiple, redundant includes */ /* make sure to use a symbol that is fairly...",
+            "datecreated": "2012-03-23T21:51:32",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "12",
+            "commentcount": "7",
+            "text": "Because you are displaying on an LCD, I am assuming this is an embedded system. Don't put the data into a header. Put the data into an ordinary C or C++ file. Compile this. It might only contain...",
+            "datecreated": "2012-03-23T22:34:44",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "I have had a similar problem. In my case, I needed an array of constants in order to use as size of other static arrays. When I tried to use the const int my_const_array[size] = {1, 2, 3, ......",
+            "datecreated": "2014-07-07T06:52:46",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "0",
+            "commentcount": "0",
+            "text": "#define ARRAY_SIZE 5 #define ARRAY (int[ARRAY_SIZE]){1, 2, 3, 4, 5} but it seems like you need to have gcc v4.0 or above.",
+            "datecreated": "2023-06-30T19:07:34",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "Reid"
+          },
+          {
+            "name": "Ed Swangren"
+          },
+          {
+            "name": "gbulmer"
+          },
+          {
+            "name": "Ojos"
+          },
+          {
+            "name": "tonka"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "Define Array in C",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I have several 450 element character arrays (storing bitmap data to display on lcd screens.) I would like to put them under a header file and #define them, but I keep getting compilation errors. How",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/9846920/define-array-in-c"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "customsearch#result",
+      "title": "c - How do I declare an array of undefined or no initial size? - Stack ...",
+      "htmlTitle": "\u003cb\u003ec\u003c/b\u003e - How do I \u003cb\u003edeclare\u003c/b\u003e an \u003cb\u003earray\u003c/b\u003e of undefined or no initial size? - Stack ...",
+      "link": "https://stackoverflow.com/questions/4352768/how-do-i-declare-an-array-of-undefined-or-no-initial-size",
+      "displayLink": "stackoverflow.com",
+      "snippet": "Dec 4, 2010 ... 6 Answers 6 · allocate an array of some initial (fairly small) size; · read into this array, keeping track of how many elements you've read; ...",
+      "htmlSnippet": "Dec 4, 2010 \u003cb\u003e...\u003c/b\u003e 6 Answers 6 &middot; allocate an \u003cb\u003earray\u003c/b\u003e of some initial (fairly small) size; &middot; read into this \u003cb\u003earray\u003c/b\u003e, keeping track of how many elements you&#39;ve read;&nbsp;...",
+      "formattedUrl": "https://stackoverflow.com/.../how-do-i-declare-an-array-of-undefined-or-n...",
+      "htmlFormattedUrl": "https://stackoverflow.com/.../how-do-i-declare-an-\u003cb\u003earray\u003c/b\u003e-of-undefined-or-n...",
+      "pagemap": {
+        "cse_thumbnail": [
+          {
+            "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSeRWLB9nxUwaP97nLPxMVJABqOLKbiMot_QWFabiJJMH8k7uiyyac&s=0",
+            "width": "117",
+            "height": "117"
+          }
+        ],
+        "qapage": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "primaryimageofpage": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "name": "How do I declare an array of undefined or no initial size?",
+            "description": "I know it could be done using malloc, but I do not know how to use it yet. For example, I wanted the user to input several numbers using an infinite loop with a sentinel to put a stop into it (i.e...."
+          }
+        ],
+        "question": [
+          {
+            "image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a",
+            "upvotecount": "46",
+            "commentcount": "0",
+            "answercount": "6",
+            "name": "How do I declare an array of undefined or no initial size?",
+            "datecreated": "2010-12-04T09:05:13",
+            "text": "I know it could be done using malloc, but I do not know how to use it yet. For example, I wanted the user to input several numbers using an infinite loop with a sentinel to put a stop into...",
+            "url": "Share"
+          }
+        ],
+        "answer": [
+          {
+            "upvotecount": "47",
+            "commentcount": "2",
+            "text": "This can be done by using a pointer, and allocating memory on the heap using malloc. Note that there is no way to later ask how big that memory block is. You have to keep track of the array...",
+            "datecreated": "2010-12-04T09:47:45",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "19",
+            "commentcount": "1",
+            "text": "The way it's often done is as follows: allocate an array of some initial (fairly small) size; read into this array, keeping track of how many elements you've read; once the array is full, reallocat...",
+            "datecreated": "2010-12-04T09:19:08",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "6",
+            "commentcount": "3",
+            "text": "Modern C, aka C99, has variable length arrays, VLA. Unfortunately, not all compilers support this but if yours does this would be an alternative.",
+            "datecreated": "2010-12-04T09:29:04",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "2",
+            "commentcount": "2",
+            "text": "Try to implement dynamic data structure such as a linked list",
+            "datecreated": "2010-12-04T09:19:02",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "1",
+            "text": "Here's a sample program that reads stdin into a memory buffer that grows as needed. It's simple enough that it should give some insight in how you might handle this kind of thing. One thing...",
+            "datecreated": "2010-12-04T10:17:53",
+            "url": "Share"
+          },
+          {
+            "upvotecount": "-1",
+            "text": "One way I can imagine is to use a linked list to implement such a scenario, if you need all the numbers entered before the user enters something which indicates the loop termination. (posting...",
+            "datecreated": "2010-12-04T09:17:04",
+            "url": "Share"
+          }
+        ],
+        "person": [
+          {
+            "name": "arscariosus"
+          },
+          {
+            "name": "gnud"
+          },
+          {
+            "name": "NPE"
+          },
+          {
+            "name": "Jens Gustedt"
+          },
+          {
+            "name": "Y.H."
+          },
+          {
+            "name": "Michael Burr"
+          },
+          {
+            "name": "khachik"
+          }
+        ],
+        "metatags": [
+          {
+            "og:image": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+            "og:type": "website",
+            "twitter:card": "summary",
+            "twitter:title": "How do I declare an array of undefined or no initial size?",
+            "og:site_name": "Stack Overflow",
+            "twitter:domain": "stackoverflow.com",
+            "viewport": "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0",
+            "twitter:description": "I know it could be done using malloc, but I do not know how to use it yet.\nFor example, I wanted the user to input several numbers using an infinite loop with a sentinel to put a stop into it (i.e....",
+            "bingbot": "noarchive",
+            "og:url": "https://stackoverflow.com/questions/4352768/how-do-i-declare-an-array-of-undefined-or-no-initial-size"
+          }
+        ],
+        "cse_image": [
+          {
+            "src": "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded"
+          }
+        ]
+      }
+    }
+  ]
+}
