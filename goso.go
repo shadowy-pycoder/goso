@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type GoogleSearchResult struct {
@@ -107,6 +109,34 @@ type GoogleSearchResult struct {
 	} `json:"items"`
 }
 
+type StackOverlowResult struct {
+	Items []struct {
+		Owner struct {
+			AccountID    int    `json:"account_id"`
+			Reputation   int    `json:"reputation"`
+			UserID       int    `json:"user_id"`
+			UserType     string `json:"user_type"`
+			AcceptRate   int    `json:"accept_rate"`
+			ProfileImage string `json:"profile_image"`
+			DisplayName  string `json:"display_name"`
+			Link         string `json:"link"`
+		} `json:"owner"`
+		IsAccepted         bool   `json:"is_accepted"`
+		Score              int    `json:"score"`
+		LastActivityDate   int    `json:"last_activity_date"`
+		LastEditDate       int    `json:"last_edit_date,omitempty"`
+		CreationDate       int    `json:"creation_date"`
+		AnswerID           int    `json:"answer_id"`
+		QuestionID         int    `json:"question_id"`
+		ContentLicense     string `json:"content_license"`
+		Body               string `json:"body"`
+		CommunityOwnedDate int    `json:"community_owned_date,omitempty"`
+	} `json:"items"`
+	HasMore        bool `json:"has_more"`
+	QuotaMax       int  `json:"quota_max"`
+	QuotaRemaining int  `json:"quota_remaining"`
+}
+
 func openFile(path string) (*os.File, func(), error) {
 	f, err := os.Open(filepath.FromSlash(fmt.Sprintf("testdata/%s.json", path)))
 	if err != nil {
@@ -117,34 +147,77 @@ func openFile(path string) (*os.File, func(), error) {
 
 func GetAnswers(client *http.Client) (GoogleSearchResult, error) {
 
-	// apiKey := os.Getenv("GOOGLE_API_KEY")
-	// se := os.Getenv("GOOGLE_SE")
-	// query := "Make query in Golang"
-	// url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s",
-	// 	apiKey, se, url.QueryEscape(query))
-	// req, err := http.NewRequest(http.MethodGet, url, nil)
-	// if err != nil {
-	// 	return GoogleSearchResult{}, err
-	// }
-	// res, err := client.Do(req)
-	// if err != nil {
-	// 	return GoogleSearchResult{}, err
-	// }
-	// defer res.Body.Close()
-	// if res.StatusCode > 299 {
-	// 	return GoogleSearchResult{}, err
-	// }
-	// var gsResp GoogleSearchResult
-	// err = json.NewDecoder(res.Body).Decode(&gsResp)
-	var gsResp GoogleSearchResult
-	f, close, err := openFile("goso")
+	apiKey := os.Getenv("GOOGLE_API_KEY")
+	se := os.Getenv("GOOGLE_SE")
+	query := "Create simple echo server in Go"
+	url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s",
+		apiKey, se, url.QueryEscape(query))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return GoogleSearchResult{}, err
 	}
-	defer close()
-	err = json.NewDecoder(f).Decode(&gsResp)
+	res, err := client.Do(req)
 	if err != nil {
 		return GoogleSearchResult{}, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode > 299 {
+		return GoogleSearchResult{}, err
+	}
+	var gsResp GoogleSearchResult
+	err = json.NewDecoder(res.Body).Decode(&gsResp)
+	// var gsResp GoogleSearchResult
+	// f, close, err := openFile("goso")
+	// if err != nil {
+	// 	return GoogleSearchResult{}, err
+	// }
+	// defer close()
+	// err = json.NewDecoder(f).Decode(&gsResp)
+	if err != nil {
+		return GoogleSearchResult{}, err
+	}
+	return gsResp, nil
+}
+
+func GetText(client *http.Client) (StackOverlowResult, error) {
+	resp, err := GetAnswers(client)
+	if err != nil {
+		println(err)
+	}
+	var answers string
+	for _, item := range resp.Items {
+		u, _ := url.Parse(item.Link)
+		answers += strings.Split(u.Path, "/")[2]
+		answers += ";"
+	}
+	answers = strings.TrimSuffix(answers, ";")
+	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
+		url.QueryEscape(answers))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return StackOverlowResult{}, err
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return StackOverlowResult{}, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode > 299 {
+		println(res.Status)
+		return StackOverlowResult{}, err
+	}
+	var gsResp StackOverlowResult
+
+	err = json.NewDecoder(res.Body).Decode(&gsResp)
+	// f, close, err := openFile("answers")
+	// if err != nil {
+	// 	return StackOverlowResult{}, err
+	// }
+	// defer close()
+
+	// err = json.NewDecoder(f).Decode(&gsResp)
+	if err != nil {
+		return StackOverlowResult{}, err
 	}
 	return gsResp, nil
 }

@@ -1,0 +1,622 @@
+{
+    "items": [
+      {
+        "owner": {
+          "account_id": 806,
+          "reputation": 124376,
+          "user_id": 1053,
+          "user_type": "registered",
+          "accept_rate": 81,
+          "profile_image": "https://www.gravatar.com/avatar/3f38c0e0cc4a1ca4656bfd8c78a581f2?s=256&d=identicon&r=PG",
+          "display_name": "Ed Swangren",
+          "link": "https://stackoverflow.com/users/1053/ed-swangren"
+        },
+        "is_accepted": true,
+        "score": 317,
+        "last_activity_date": 1481017991,
+        "last_edit_date": 1481017991,
+        "creation_date": 1343242261,
+        "answer_id": 11656585,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>You can't return arrays from functions in C.  You also can't (shouldn't) do this:</p>\n\n<pre><code>char *returnArray(char array []){\n char returned [10];\n //methods to pull values from array, interpret them, and then create new array\n return &amp;(returned[0]); //is this correct?\n} \n</code></pre>\n\n<p><code>returned</code> is created with automatic storage duration and references to it will become invalid once it leaves its declaring scope, i.e., when the function returns.</p>\n\n<p>You will need to dynamically allocate the memory inside of the function or fill a preallocated buffer provided by the caller.</p>\n\n<p><strong>Option 1:</strong> </p>\n\n<p>dynamically allocate the memory inside of the function (caller responsible for deallocating <code>ret</code>)</p>\n\n<pre><code>char *foo(int count) {\n    char *ret = malloc(count);\n    if(!ret)\n        return NULL;\n\n    for(int i = 0; i &lt; count; ++i) \n        ret[i] = i;\n\n    return ret;\n}\n</code></pre>\n\n<p>Call it like so:</p>\n\n<pre><code>int main() {\n    char *p = foo(10);\n    if(p) {\n        // do stuff with p\n        free(p);\n    }\n\n    return 0;\n}\n</code></pre>\n\n<p><strong>Option 2:</strong> </p>\n\n<p>fill a preallocated buffer provided by the caller (caller allocates <code>buf</code> and passes to the function)</p>\n\n<pre><code>void foo(char *buf, int count) {\n    for(int i = 0; i &lt; count; ++i)\n        buf[i] = i;\n}\n</code></pre>\n\n<p>And call it like so:</p>\n\n<pre><code>int main() {\n    char arr[10] = {0};\n    foo(arr, 10);\n    // No need to deallocate because we allocated \n    // arr with automatic storage duration.\n    // If we had dynamically allocated it\n    // (i.e. malloc or some variant) then we \n    // would need to call free(arr)\n}\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 23543,
+          "reputation": 9070,
+          "user_id": 59062,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/67dc47ee859f270086f6508dff2fef76?s=256&d=identicon&r=PG",
+          "display_name": "Mikael Auno",
+          "link": "https://stackoverflow.com/users/59062/mikael-auno"
+        },
+        "is_accepted": false,
+        "score": 302,
+        "last_activity_date": 1358945618,
+        "last_edit_date": 1358945618,
+        "creation_date": 1246906451,
+        "answer_id": 1088667,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>If you don't want to change the strings, then you could simply do</p>\n\n<pre><code>const char *a[2];\na[0] = \"blah\";\na[1] = \"hmm\";\n</code></pre>\n\n<p>When you do it like this you will allocate an array of two pointers to <code>const char</code>. These pointers will then be set to the addresses of the static strings <code>\"blah\"</code> and <code>\"hmm\"</code>.</p>\n\n<p>If you do want to be able to change the actual string content, the you have to do something like</p>\n\n<pre><code>char a[2][14];\nstrcpy(a[0], \"blah\");\nstrcpy(a[1], \"hmm\");\n</code></pre>\n\n<p>This will allocate two consecutive arrays of 14 <code>char</code>s each, after which the content of the static strings will be copied into them.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 45619,
+          "reputation": 123128,
+          "user_id": 134554,
+          "user_type": "registered",
+          "accept_rate": 0,
+          "profile_image": "https://i.sstatic.net/1qpPd.png?s=256",
+          "display_name": "John Bode",
+          "link": "https://stackoverflow.com/users/134554/john-bode"
+        },
+        "is_accepted": false,
+        "score": 247,
+        "last_activity_date": 1565791200,
+        "last_edit_date": 1565791200,
+        "creation_date": 1247002266,
+        "answer_id": 1095006,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>There are several ways to create an array of strings in C.  If all the strings are going to be the same length (or at least have the same maximum length), you simply declare a 2-d array of char and assign as necessary:</p>\n\n<pre><code>char strs[NUMBER_OF_STRINGS][STRING_LENGTH+1];\n...\nstrcpy(strs[0], aString); // where aString is either an array or pointer to char\nstrcpy(strs[1], \"foo\");\n</code></pre>\n\n<p>You can add a list of initializers as well:</p>\n\n<pre><code>char strs[NUMBER_OF_STRINGS][STRING_LENGTH+1] = {\"foo\", \"bar\", \"bletch\", ...};\n</code></pre>\n\n<p>This assumes the size and number of strings in the initializer match up with your array dimensions.  In this case, the contents of each string literal (which is itself a zero-terminated array of char) are copied to the memory allocated to strs.  The problem with this approach is the possibility of internal fragmentation; if you have 99 strings that are 5 characters or less, but 1 string that's 20 characters long, 99 strings are going to have at least 15 unused characters; that's a waste of space.</p>\n\n<p>Instead of using a 2-d array of char, you can store a 1-d array of pointers to char:</p>\n\n<pre><code>char *strs[NUMBER_OF_STRINGS];\n</code></pre>\n\n<p>Note that in this case, you've only allocated memory to hold the pointers to the strings; the memory for the strings themselves must be allocated elsewhere (either as static arrays or by using <code>malloc()</code> or <code>calloc()</code>).  You can use the initializer list like the earlier example:</p>\n\n<pre><code>char *strs[NUMBER_OF_STRINGS] = {\"foo\", \"bar\", \"bletch\", ...};\n</code></pre>\n\n<p>Instead of copying the contents of the string constants, you're simply storing the pointers to them.  Note that string constants may not be writable; you can reassign the pointer, like so:</p>\n\n<pre><code>strs[i] = \"bar\";\nstrs[i] = \"foo\"; \n</code></pre>\n\n<p>But you may not be able to change the string's contents; i.e.,</p>\n\n<pre><code>strs[i] = \"bar\";\nstrcpy(strs[i], \"foo\");\n</code></pre>\n\n<p>may not be allowed.  </p>\n\n<p>You can use <code>malloc()</code> to dynamically allocate the buffer for each string and copy to that buffer:</p>\n\n<pre><code>strs[i] = malloc(strlen(\"foo\") + 1);\nstrcpy(strs[i], \"foo\");\n</code></pre>\n\n<p>BTW, </p>\n\n<pre><code>char (*a[2])[14];\n</code></pre>\n\n<p>Declares a as a 2-element array of pointers to 14-element arrays of char.  </p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1389674,
+          "reputation": 3871,
+          "user_id": 1320822,
+          "user_type": "registered",
+          "accept_rate": 80,
+          "profile_image": "https://www.gravatar.com/avatar/b5b64f30a193e5c5521dbb6d17955485?s=256&d=identicon&r=PG",
+          "display_name": "nims",
+          "link": "https://stackoverflow.com/users/1320822/nims"
+        },
+        "is_accepted": true,
+        "score": 147,
+        "last_activity_date": 1679665647,
+        "last_edit_date": 1679665647,
+        "creation_date": 1336279671,
+        "answer_id": 10468181,
+        "question_id": 10468128,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Use:</p>\n<pre><code>#include&lt;stdio.h&gt;\n\n#define n 3\n\nstruct body\n{\n    double p[3]; // Position\n    double v[3]; // Velocity\n    double a[3]; // Acceleration\n    double radius;\n    double mass;\n};\n\nstruct body bodies[n];\n\nint main()\n{\n    int a, b;\n    for(a = 0; a &lt; n; a++)\n    {\n        for(b = 0; b &lt; 3; b++)\n        {\n            bodies[a].p[b] = 0;\n            bodies[a].v[b] = 0;\n            bodies[a].a[b] = 0;\n        }\n        bodies[a].mass = 0;\n        bodies[a].radius = 1.0;\n    }\n\n    return 0;\n}\n</code></pre>\n<p>This works fine. Your question was not very clear by the way, so match the layout of your source code with the above.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 25438,
+          "reputation": 281440,
+          "user_id": 65387,
+          "user_type": "registered",
+          "accept_rate": 66,
+          "profile_image": "https://www.gravatar.com/avatar/c0377fc1b08293d3362611978913a32b?s=256&d=identicon&r=PG",
+          "display_name": "mpen",
+          "link": "https://stackoverflow.com/users/65387/mpen"
+        },
+        "is_accepted": false,
+        "score": 123,
+        "last_activity_date": 1690549318,
+        "last_edit_date": 1690549318,
+        "creation_date": 1246906166,
+        "answer_id": 1088643,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Ack! Constant strings:</p>\n<pre><code>const char *strings[] = {&quot;one&quot;,&quot;two&quot;,&quot;three&quot;};\n</code></pre>\n<p>If I remember correctly.</p>\n<p>Oh, and you want to use <a href=\"http://en.cppreference.com/w/c/string/byte/strcpy\" rel=\"nofollow noreferrer\">strcpy</a> for assignment, not the = operator. <a href=\"http://msdn.microsoft.com/en-us/library/td1esda9%28VS.80%29.aspx\" rel=\"nofollow noreferrer\">strcpy_s</a> is safer, but it's neither in C89 nor in C99 standards.</p>\n<pre><code>char arr[MAX_NUMBER_STRINGS][MAX_STRING_SIZE]; \nstrcpy(arr[0], &quot;blah&quot;);\n</code></pre>\n<p><del><strong>Update:</strong> <a href=\"https://stackoverflow.com/questions/1088622/how-do-i-create-an-array-of-strings-in-c/1088643?noredirect=1#comment69645493_1088643\">Thomas</a> says <code>strlcpy</code> is the way to go.</del> [not portable]</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 45619,
+          "reputation": 123128,
+          "user_id": 134554,
+          "user_type": "registered",
+          "accept_rate": 0,
+          "profile_image": "https://i.sstatic.net/1qpPd.png?s=256",
+          "display_name": "John Bode",
+          "link": "https://stackoverflow.com/users/134554/john-bode"
+        },
+        "is_accepted": false,
+        "score": 49,
+        "last_activity_date": 1667506469,
+        "last_edit_date": 1667506469,
+        "creation_date": 1343246353,
+        "answer_id": 11657653,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>C's treatment of arrays is <em>very</em> different from Java's, and you'll have to adjust your thinking accordingly.  Arrays in C are not first class objects (that is, an array expression does not retain its &quot;array-ness&quot; in most contexts).  In C, an expression of type &quot;N-element array of <code>T</code>&quot; will be implicitly converted (&quot;decay&quot;) to an expression of type &quot;pointer to <code>T</code>&quot;, except when the array expression is an operand of the <code>sizeof</code> or unary <code>&amp;</code> operators, or if the array expression is a string literal being used to initialize another array in a declaration.</p>\n<p>Among other things, this means that you cannot pass an array expression to a function and have it received <em>as an array type</em>; the function actually receives a pointer type:</p>\n<pre><code>void foo(char *a, size_t asize)\n{\n  // do something with a\n}\n\nint bar(void)\n{\n  char str[6] = &quot;Hello&quot;;\n  foo(str, sizeof str);\n}\n</code></pre>\n<p>In the call to <code>foo</code>, the expression <code>str</code> is converted from type <code>char [6]</code> to <code>char *</code>, which is why the first parameter of <code>foo</code> is declared <code>char *a</code> instead of <code>char a[6]</code>.  In <code>sizeof str</code>, since the array expression is an operand of the <code>sizeof</code> operator, it's not converted to a pointer type, so you get the number of bytes in the array (6).</p>\n<p>If you're <em>really</em> interested, you can read Dennis Ritchie's <a href=\"http://cm.bell-labs.com/who/dmr/chist.html\" rel=\"noreferrer\">The Development of the C Language</a> to understand where this treatment comes from.</p>\n<p>The upshot is that functions cannot return array types, which is fine since array expressions cannot be the target of an assignment, either.</p>\n<p>The safest method is for the caller to define the array, and pass its address and size to the function that's supposed to write to it:</p>\n<pre><code>void returnArray(const char *srcArray, size_t srcSize, char *dstArray, char dstSize)\n{\n  ...\n  dstArray[i] = some_value_derived_from(srcArray[i]);\n  ...\n}\n\nint main(void)\n{\n  char src[] = &quot;This is a test&quot;;\n  char dst[sizeof src];\n  ...\n  returnArray(src, sizeof src, dst, sizeof dst);\n  ...\n}\n</code></pre>\n<p>Another method is for the function to allocate the array dynamically and return the pointer and size:</p>\n<pre><code>char *returnArray(const char *srcArray, size_t srcSize, size_t *dstSize)\n{\n  char *dstArray = malloc(srcSize);\n  if (dstArray)\n  {\n    *dstSize = srcSize;\n    ...\n  }\n  return dstArray;\n}\n\nint main(void)\n{\n  char src[] = &quot;This is a test&quot;;\n  char *dst;\n  size_t dstSize;\n\n  dst = returnArray(src, sizeof src, &amp;dstSize);\n  ...\n  free(dst);\n  ...\n}\n</code></pre>\n<p>In this case, the caller is responsible for deallocating the array with the <code>free</code> library function.</p>\n<p>Note that <code>dst</code> in the above code is a simple pointer to <code>char</code>, not a pointer to an array of <code>char</code>.  C's pointer and array semantics are such that you can apply the subscript operator <code>[]</code> to either an expression of array type <em>or</em> pointer type; both <code>src[i]</code> and <code>dst[i]</code> will access the <code>i</code>'th element of the array (even though only <code>src</code> has array type).</p>\n<p>You <em>can</em> declare a pointer to an N-element array of <code>T</code> and do something similar:</p>\n<pre><code>char (*returnArray(const char *srcArr, size_t srcSize))[SOME_SIZE]\n{\n  char (*dstArr)[SOME_SIZE] = malloc(sizeof *dstArr);\n  if (dstArr)\n  {\n    ...\n    (*dstArr)[i] = ...;\n    ...\n  }\n  return dstArr;\n}\n\nint main(void)\n{\n  char src[] = &quot;This is a test&quot;;\n  char (*dst)[SOME_SIZE];\n  ...\n  dst = returnArray(src, sizeof src);\n  ...\n  printf(&quot;%c&quot;, (*dst)[j]);\n  ...\n}\n</code></pre>\n<p>There are several drawbacks with the above.  First of all, older versions of C expect <code>SOME_SIZE</code> to be a compile-time constant, meaning that function will only ever work with one array size.  Secondly, you have to dereference the pointer before applying the subscript, which clutters the code.  Pointers to arrays work better when you're dealing with multi-dimensional arrays.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 13511,
+          "reputation": 78410,
+          "user_id": 27204,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/29671a1757eb710d42d327926b5e08b5?s=256&d=identicon&r=PG",
+          "display_name": "gnud",
+          "link": "https://stackoverflow.com/users/27204/gnud"
+        },
+        "is_accepted": true,
+        "score": 47,
+        "last_activity_date": 1695451094,
+        "last_edit_date": 1695451094,
+        "creation_date": 1291456065,
+        "answer_id": 4352928,
+        "question_id": 4352768,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>This can be done by using a pointer, and allocating memory on the heap using <code>malloc</code>.\nNote that there is no way to later ask how big that memory block is. You have to keep track of the array size yourself.</p>\n<pre><code>#include &lt;stdio.h&gt;\n#include &lt;stdlib.h&gt;\n#include &lt;string.h&gt;\n\nint main(int argc, char** argv)\n{\n  /* declare a pointer to an integer */\n  int *data; \n  /* we also have to keep track of how big our array is - I use 50 as an example*/\n  const int datacount = 50;\n  data = malloc(sizeof(int) * datacount); /* allocate memory for 50 int's */\n  if (!data) { /* If data == 0 after the call to malloc, allocation failed for some reason */\n    perror(&quot;Error allocating memory&quot;);\n    abort();\n  }\n  /* at this point, we know that data points to a valid block of memory.\n     Remember, however, that this memory is not initialized in any way -- it contains garbage.\n     Let's start by clearing it. */\n  memset(data, 0, sizeof(int)*datacount);\n  /* now our array contains all zeroes. */\n  data[0] = 1;\n  data[2] = 15;\n  data[49] = 66; /* the last element in our array, since we start counting from 0 */\n  /* Loop through the array, printing out the values (mostly zeroes, but even so) */\n  for(int i = 0; i &lt; datacount; ++i) {\n    printf(&quot;Element %d: %d\\n&quot;, i, data[i]);\n  }\n}\n</code></pre>\n<p>That's it. What follows is a more involved explanation of why this works :)</p>\n<p>I don't know how well you know C pointers, but array access in C (like <code>array[2]</code>) is actually a shorthand for accessing memory via a pointer. To access the memory pointed to by <code>data</code>, you write <code>*data</code>. This is known as dereferencing the pointer. Since <code>data</code> is of type <code>int *</code>, then <code>*data</code> is of type <code>int</code>. Now to an important piece of information: <code>(data + 2)</code> means &quot;add the byte size of 2 ints to the adress pointed to by <code>data</code>&quot;.</p>\n<p>An array in C is just a sequence of values in adjacent memory. <code>array[1]</code> is just next to <code>array[0]</code>. So when we allocate a big block of memory and want to use it as an array, we need an easy way of getting the direct adress to every element inside. Luckily, C lets us use the array notation on pointers as well. <code>data[0]</code> means the same thing as <code>*(data+0)</code>, namely &quot;access the memory pointed to by <code>data</code>&quot;. <code>data[2]</code> means <code>*(data+2)</code>, and accesses the third <code>int</code> in the memory block.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 6127,
+          "reputation": 11733,
+          "user_id": 10184,
+          "user_type": "registered",
+          "accept_rate": 85,
+          "profile_image": "https://www.gravatar.com/avatar/146eb8cdfc217c9aec9530f4b7cfbdca?s=256&d=identicon&r=PG",
+          "display_name": "robottobor",
+          "link": "https://stackoverflow.com/users/10184/robottobor"
+        },
+        "is_accepted": false,
+        "score": 30,
+        "last_activity_date": 1232847527,
+        "creation_date": 1232847527,
+        "answer_id": 477041,
+        "question_id": 476843,
+        "content_license": "CC BY-SA 2.5",
+        "body": "<p>This should work:</p>\n\n<pre><code>@interface MyClass\n{\n    int _doubleDigits[10]; \n}\n\n@property(readonly) int *doubleDigits;\n\n@end\n\n@implementation MyClass\n\n- (int *)doubleDigits\n{\n    return _doubleDigits;\n}\n\n@end\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 4492016,
+          "reputation": 602,
+          "user_id": 3736162,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/c5a535be26617f434e323dca33ee7748?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "Indinfer",
+          "link": "https://stackoverflow.com/users/3736162/indinfer"
+        },
+        "is_accepted": false,
+        "score": 27,
+        "last_activity_date": 1667506811,
+        "last_edit_date": 1667506811,
+        "creation_date": 1426010247,
+        "answer_id": 28970797,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>I am not saying that this is the best solution or a preferred solution to the given problem. However, it may be useful to remember that functions can return structs. Although functions cannot return arrays, arrays can be wrapped in structs and the function can return the struct thereby carrying the array with it. This works for fixed length arrays.</p>\n<pre><code>    #include &lt;stdio.h&gt;\n    #include &lt;stdlib.h&gt;\n    #include &lt;string.h&gt;\n\n    typedef\n    struct \n    {\n        char v[10];\n    } CHAR_ARRAY;\n\n\n\n    CHAR_ARRAY returnArray(CHAR_ARRAY array_in, int size)\n    {\n        CHAR_ARRAY returned;\n\n        /*\n        . . . methods to pull values from array, interpret them, and then create new array\n        */\n\n        for (int i = 0;  i &lt; size; i++ )\n            returned.v[i] = array_in.v[i] + 1;\n\n        return returned; // Works!\n    } \n\n\n\n\n    int main(int argc, char * argv[])\n    {\n        CHAR_ARRAY array = {1,0,0,0,0,1,1};\n\n        char arrayCount = 7;\n\n        CHAR_ARRAY returnedArray = returnArray(array, arrayCount); \n\n        for (int i = 0; i &lt; arrayCount; i++)\n            printf(&quot;%d, &quot;, returnedArray.v[i]);  //is this correctly formatted?\n\n        getchar();\n        return 0;\n    }\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 14938926,
+          "reputation": 747,
+          "user_id": 10786209,
+          "user_type": "registered",
+          "profile_image": "https://i.sstatic.net/iUj4O.png?s=256",
+          "display_name": "Abdel Aleem",
+          "link": "https://stackoverflow.com/users/10786209/abdel-aleem"
+        },
+        "is_accepted": false,
+        "score": 24,
+        "last_activity_date": 1547462447,
+        "creation_date": 1547462447,
+        "answer_id": 54179893,
+        "question_id": 10468128,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Another way of initializing an array of structs is to initialize the array members explicitly. This approach is useful and simple if there aren't too many struct and array members. </p>\n\n<p>Use the <code>typedef</code> specifier to avoid re-using the <code>struct</code> statement everytime you declare a struct variable:</p>\n\n<pre><code>typedef struct\n{\n    double p[3];//position\n    double v[3];//velocity\n    double a[3];//acceleration\n    double radius;\n    double mass;\n}Body;\n</code></pre>\n\n<p>Then declare your array of structs. Initialization of each element goes along with the declaration:</p>\n\n<pre><code>Body bodies[n] = {{{0,0,0}, {0,0,0}, {0,0,0}, 0, 1.0}, \n                  {{0,0,0}, {0,0,0}, {0,0,0}, 0, 1.0}, \n                  {{0,0,0}, {0,0,0}, {0,0,0}, 0, 1.0}};\n</code></pre>\n\n<p>To repeat, this is a rather simple and straightforward solution if you don't have too many array elements and large struct members and if you, as you stated, are not interested in a more dynamic approach. This approach can also be useful if the struct members are initialized with named enum-variables (and not just numbers like the example above) whereby it gives the code-reader a better overview of the purpose and function of a structure and its members in certain applications.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 4449797,
+          "reputation": 349,
+          "user_id": 3622094,
+          "user_type": "registered",
+          "accept_rate": 25,
+          "profile_image": "https://www.gravatar.com/avatar/29e6046c134318c3cdacb68ff09bac65?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "Dounchan",
+          "link": "https://stackoverflow.com/users/3622094/dounchan"
+        },
+        "is_accepted": false,
+        "score": 23,
+        "last_activity_date": 1505969843,
+        "last_edit_date": 1505969843,
+        "creation_date": 1404339630,
+        "answer_id": 24542015,
+        "question_id": 10468128,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>So to put it all together by using <code>malloc()</code>:</p>\n\n<pre><code>int main(int argc, char** argv) {\n    typedef struct{\n        char* firstName;\n        char* lastName;\n        int day;\n        int month;\n        int year;\n\n    }STUDENT;\n\n    int numStudents=3;\n    int x;\n    STUDENT* students = malloc(numStudents * sizeof *students);\n    for (x = 0; x &lt; numStudents; x++){\n        students[x].firstName=(char*)malloc(sizeof(char*));\n        scanf(\"%s\",students[x].firstName);\n        students[x].lastName=(char*)malloc(sizeof(char*));\n        scanf(\"%s\",students[x].lastName);\n        scanf(\"%d\",&amp;students[x].day);\n        scanf(\"%d\",&amp;students[x].month);\n        scanf(\"%d\",&amp;students[x].year);\n    }\n\n    for (x = 0; x &lt; numStudents; x++)\n        printf(\"first name: %s, surname: %s, day: %d, month: %d, year: %d\\n\",students[x].firstName,students[x].lastName,students[x].day,students[x].month,students[x].year);\n\n    return (EXIT_SUCCESS);\n}\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 86845,
+          "reputation": 8685,
+          "user_id": 241214,
+          "user_type": "registered",
+          "profile_image": "https://graph.facebook.com/765241809/picture?type=large",
+          "display_name": "lucius",
+          "link": "https://stackoverflow.com/users/241214/lucius"
+        },
+        "is_accepted": false,
+        "score": 22,
+        "last_activity_date": 1262214920,
+        "creation_date": 1262214920,
+        "answer_id": 1983022,
+        "question_id": 476843,
+        "content_license": "CC BY-SA 2.5",
+        "body": "<p>C arrays are not one of the supported data types for properties. See \"The Objective-C Programming Language\" in Xcode documentation, in the Declared Properties page:</p>\n\n<blockquote>\n  <p><strong>Supported Types</strong> </p>\n  \n  <p>You can declare a property for any\n  Objective-C class, Core Foundation\n  data type, or “plain old data” (POD)\n  type (see C++ Language Note: POD\n  Types). For constraints on using Core\n  Foundation types, however, see “Core\n  Foundation.”</p>\n</blockquote>\n\n<p>POD does not include C arrays. See \n<a href=\"http://www.fnal.gov/docs/working-groups/fpcltf/Pkg/ISOcxx/doc/POD.html\" rel=\"noreferrer\">http://www.fnal.gov/docs/working-groups/fpcltf/Pkg/ISOcxx/doc/POD.html</a></p>\n\n<p>If you need an array, you should use NSArray or NSData. </p>\n\n<p>The workarounds, as I see it, are like using (void *) to circumvent type checking. You can do it, but it makes your code less maintainable.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 379598,
+          "reputation": 19464,
+          "user_id": 733077,
+          "user_type": "registered",
+          "accept_rate": 96,
+          "profile_image": "https://www.gravatar.com/avatar/db1bf62fae51d5bafb8f1db7fb677176?s=256&d=identicon&r=PG",
+          "display_name": "luser droog",
+          "link": "https://stackoverflow.com/users/733077/luser-droog"
+        },
+        "is_accepted": true,
+        "score": 21,
+        "last_activity_date": 1366356905,
+        "last_edit_date": 1366356905,
+        "creation_date": 1366315750,
+        "answer_id": 16092151,
+        "question_id": 16091848,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>You have one-too-many pointers in both of your arrays.</p>\n\n<pre><code>char arrayOfChars[50]; // a single array of characters\nchar *arrayOfArraysOfChars[10]; // array to hold multiple single arrays of characters\n</code></pre>\n\n<p>Since the arrayOfChars is being used like a buffer (new data always goes there first), you'll need to save a copy of the string into the arrayOfArrays. The POSIX function <code>strdup</code> should help here.</p>\n\n<p>Notice <code>&amp;</code> and <code>*</code> are opposites, so <code>&amp;*</code> and <code>*&amp;</code> do absolutely nothing.</p>\n\n<p>You could also, make the arrayOfArrays literally that.</p>\n\n<pre><code>char arrayOfChars[50]; // a single array of characters\nchar arrayOfArraysOfChars[10][50]; // array to hold multiple single arrays of characters\n</code></pre>\n\n<p>With this setup, you should use <code>strcpy</code> to copy the data into arrayOfArrays.</p>\n\n<hr>\n\n<p>Having read your edit, I think you need to start <em>real</em> simple. And FWIW the variable names are the wrong kind of Hungarian.</p>\n\n<p>For what I think you're trying to do, I'd start with just a single char array. This will be the main <em>buffer</em>, to hold strings that are being input and examined.</p>\n\n<pre><code>enum { BUFSZ = 50 };\nchar buf[BUFSZ + 1];\n</code></pre>\n\n<p>Then you can use it with <code>fgets</code> or whatever.</p>\n\n<pre><code>fgets(buf, BUFSZ, infile);\n</code></pre>\n\n<p>To save these up in an array, I'd use <code>strdup</code> for its automatic trimming. If the strings are going to be mostly 2 characters long, I don't want 48 extra bytes being used for each one. So, an array of char pointers (strings).</p>\n\n<pre><code>enum { STRVSZ = 40 };\nchar *strv[STRVSZ + 1];\nint i;\ni = 0;\nstrv[i] = strdup(buf);\nstrv[i+1] = NULL; // This makes it an \"argv-style\" NULL-terminated array of strings\n++i; // i is now the index of the next element, and a count of elements already added\n</code></pre>\n\n<p>Each element of <code>strv</code> is a char pointer. But to preserve our sanity, we're trying to <em>abstract away</em> some of that distracting detail for a moment, and treat <em>strings</em> as a separate data type.</p>\n\n<p>Now to create lists of these, we do the same thing again. But there's no <code>strdup</code>-type function to make a duplicate of an array of pointers, so we have to separate the allocation and copying.</p>\n\n<pre><code>enum { STRVVSZ = 20 };\nchar **strvv[STRVVSZ + 1];\nint j;\nj = 0;\nstrvv[j] = calloc(i+1, sizeof *strvv[j]); // assuming i is the count of elements \nmemcpy(strvv[j], strv, i * sizeof *strvv[j]);\n++j; // j is now the index of the next string-pointer array in the array-of-same,\n     // and a count of elements already added.\n</code></pre>\n\n<p>Now, my names are just as silly as yours, but they're <em>shorter!</em></p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 21122,
+          "reputation": 33533,
+          "user_id": 51103,
+          "user_type": "registered",
+          "accept_rate": 78,
+          "profile_image": "https://i.sstatic.net/3rQ2y.png?s=256",
+          "display_name": "Faisal Vali",
+          "link": "https://stackoverflow.com/users/51103/faisal-vali"
+        },
+        "is_accepted": false,
+        "score": 20,
+        "last_activity_date": 1565790245,
+        "last_edit_date": 1565790245,
+        "creation_date": 1246908104,
+        "answer_id": 1088782,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Here are some of your options:</p>\n\n<pre><code>char a1[][14] = { \"blah\", \"hmm\" };\nchar* a2[] = { \"blah\", \"hmm\" };\nchar (*a3[])[] = { &amp;\"blah\", &amp;\"hmm\" };  // only since you brought up the syntax -\n\nprintf(a1[0]); // prints blah\nprintf(a2[0]); // prints blah\nprintf(*a3[0]); // prints blah\n</code></pre>\n\n<p>The advantage of <code>a2</code> is that you can then do the following with string literals</p>\n\n<pre><code>a2[0] = \"hmm\";\na2[1] = \"blah\";\n</code></pre>\n\n<p>And for <code>a3</code> you may do the following:</p>\n\n<pre><code>a3[0] = &amp;\"hmm\";\na3[1] = &amp;\"blah\";\n</code></pre>\n\n<p>For <code>a1</code> you will have to use <code>strcpy()</code> (better yet <code>strncpy()</code>) even when assigning string literals.  The reason is that <code>a2</code>, and <code>a3</code> are arrays of pointers and you can make their elements (i.e. pointers) point to any storage, whereas <code>a1</code> is an array of 'array of chars' and so each element is an array that \"owns\" its own storage (which means it gets destroyed when it goes out of scope) - you can only copy stuff into its storage.</p>\n\n<p>This also brings us to the disadvantage of using <code>a2</code> and <code>a3</code> - since they point to static storage (where string literals are stored) the contents of which cannot be reliably changed (viz. undefined behavior), if you want to assign non-string literals to the elements of <code>a2</code> or <code>a3</code> - you will first have to dynamically allocate enough memory and then have their elements point to this memory, and then copy the characters into it - and then you have to be sure to deallocate the memory when done.</p>\n\n<p>Bah - I miss C++ already ;)</p>\n\n<p>p.s. Let me know if you need examples.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 152622,
+          "reputation": 498485,
+          "user_id": 367273,
+          "user_type": "registered",
+          "accept_rate": 96,
+          "profile_image": "https://www.gravatar.com/avatar/f1ed2b0c87f602ef30229f5c4b04eff6?s=256&d=identicon&r=PG",
+          "display_name": "NPE",
+          "link": "https://stackoverflow.com/users/367273/npe"
+        },
+        "is_accepted": false,
+        "score": 19,
+        "last_activity_date": 1291454703,
+        "last_edit_date": 1291454703,
+        "creation_date": 1291454348,
+        "answer_id": 4352822,
+        "question_id": 4352768,
+        "content_license": "CC BY-SA 2.5",
+        "body": "<p>The way it's often done is as follows:</p>\n\n<ul>\n<li>allocate an array of some initial (fairly small) size;</li>\n<li>read into this array, keeping track of how many elements you've read;</li>\n<li>once the array is full, reallocate it, doubling the size and preserving (i.e. copying) the contents;</li>\n<li>repeat until done.</li>\n</ul>\n\n<p>I find that this pattern comes up pretty frequently.</p>\n\n<p>What's interesting about this method is that it allows one to insert <code>N</code> elements into an empty array one-by-one in amortized <code>O(N)</code> time without knowing <code>N</code> in advance.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 806,
+          "reputation": 124376,
+          "user_id": 1053,
+          "user_type": "registered",
+          "accept_rate": 81,
+          "profile_image": "https://www.gravatar.com/avatar/3f38c0e0cc4a1ca4656bfd8c78a581f2?s=256&d=identicon&r=PG",
+          "display_name": "Ed Swangren",
+          "link": "https://stackoverflow.com/users/1053/ed-swangren"
+        },
+        "is_accepted": true,
+        "score": 18,
+        "last_activity_date": 1332539807,
+        "last_edit_date": 1332539807,
+        "creation_date": 1332539492,
+        "answer_id": 9846940,
+        "question_id": 9846920,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>Well... you certainly don't need to use a define.  Just add them into the header as const, static arrays.</p>\n\n<pre><code>/* prevents multiple, redundant includes */\n/* make sure to use a symbol that is fairly sure to be unique */\n#ifndef TEST_H\n#define TEST_H\n\n/* your image data */\nconst char image[] = { 1, 2, 3, 4, ... };\n\n#endif\n</code></pre>\n\n<p>Also, if you want help on a compilation error then you should post your code.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1142825,
+          "reputation": 23631,
+          "user_id": 1126268,
+          "user_type": "registered",
+          "accept_rate": 97,
+          "profile_image": "https://www.gravatar.com/avatar/4fd74fac60ad49e1f9cce828567adab4?s=256&d=identicon&r=PG",
+          "display_name": "md5",
+          "link": "https://stackoverflow.com/users/1126268/md5"
+        },
+        "is_accepted": true,
+        "score": 17,
+        "last_activity_date": 1362153691,
+        "creation_date": 1362153691,
+        "answer_id": 15161819,
+        "question_id": 15161774,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<blockquote>\n<pre><code>words_array[0]=word1;\n</code></pre>\n</blockquote>\n\n<p><code>word_array[0]</code> is a <code>char</code>, whereas <code>word1</code> is a <code>char *</code>. Your character is not able to hold an address.</p>\n\n<p>An array of strings might look like it:</p>\n\n<pre><code>char array[NUMBER_STRINGS][STRING_MAX_SIZE];\n</code></pre>\n\n<p>If you rather want an array of pointers to your strings:</p>\n\n<pre><code>char *array[NUMBER_STRINGS];\n</code></pre>\n\n<p>And then:</p>\n\n<pre><code>array[0] = word1;\narray[1] = word2;\narray[2] = word3;\n</code></pre>\n\n<p>Maybe you should read <a href=\"http://c-faq.com/aryptr/index.html\">this</a>.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1266606,
+          "reputation": 12512,
+          "user_id": 1223781,
+          "user_type": "registered",
+          "accept_rate": 86,
+          "profile_image": "https://www.gravatar.com/avatar/ab1208d2b5be62b20d6771ef93973a90?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "Tim Vermeulen",
+          "link": "https://stackoverflow.com/users/1223781/tim-vermeulen"
+        },
+        "is_accepted": false,
+        "score": 16,
+        "last_activity_date": 1356866921,
+        "last_edit_date": 1356866921,
+        "creation_date": 1350069004,
+        "answer_id": 12865570,
+        "question_id": 476843,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>Like lucius said, it's not possible to have a C array property. Using an <code>NSArray</code> is the way to go. An array only stores objects, so you'd have to use <code>NSNumber</code>s to store your ints. With the new literal syntax, initialising it is very easy and straight-forward:</p>\n\n<pre><code>NSArray *doubleDigits = @[ @1, @2, @3, @4, @5, @6, @7, @8, @9, @10 ];\n</code></pre>\n\n<p>Or:</p>\n\n<pre><code>NSMutableArray *doubleDigits = [NSMutableArray array];\n\nfor (int n = 1; n &lt;= 10; n++)\n    [doubleDigits addObject:@(n)];\n</code></pre>\n\n<p>For more information: <a href=\"http://developer.apple.com/library/ios/#documentation/cocoa/reference/foundation/Classes/NSArray_Class/NSArray.html/\">NSArray Class Reference</a>, <a href=\"https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSNumber_Class/Reference/Reference.html/\">NSNumber Class Reference</a>, <a href=\"http://joris.kluivers.nl/blog/2012/03/13/new-objectivec-literal-syntax/\">Literal Syntax</a></p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 6184331,
+          "reputation": 354,
+          "user_id": 4818860,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/127e6b485db2619a19a733364571935a?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "Sergey",
+          "link": "https://stackoverflow.com/users/4818860/sergey"
+        },
+        "is_accepted": false,
+        "score": 16,
+        "last_activity_date": 1491468590,
+        "creation_date": 1491468590,
+        "answer_id": 43250211,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>If you don't want to keep track of number of strings in array and want to iterate over them, just add NULL string in the end:</p>\n\n<pre><code>char *strings[]={ \"one\", \"two\", \"three\", NULL };\n\nint i=0;\nwhile(strings[i]) {\n  printf(\"%s\\n\", strings[i]);\n  //do something\n  i++;\n};\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 2081413,
+          "reputation": 1760,
+          "user_id": 1853322,
+          "user_type": "registered",
+          "accept_rate": 38,
+          "profile_image": "https://www.gravatar.com/avatar/d5f57378bf1aef4e7b8d4038051690d5?s=256&d=identicon&r=PG",
+          "display_name": "FutureSci",
+          "link": "https://stackoverflow.com/users/1853322/futuresci"
+        },
+        "is_accepted": false,
+        "score": 14,
+        "last_activity_date": 1530325779,
+        "last_edit_date": 1530325779,
+        "creation_date": 1359655782,
+        "answer_id": 14632340,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Or you can declare a struct type, that contains a character arry(1 string), them create an array of the structs and thus a multi-element array</p>\n\n<pre><code>typedef struct name\n{\n   char name[100]; // 100 character array\n}name;\n\nmain()\n{\n   name yourString[10]; // 10 strings\n   printf(\"Enter something\\n:);\n   scanf(\"%s\",yourString[0].name);\n   scanf(\"%s\",yourString[1].name);\n   // maybe put a for loop and a few print ststements to simplify code\n   // this is just for example \n }\n</code></pre>\n\n<p>One of the advantages of this over any other method is that this allows you to scan directly into the string without having to use <code>strcpy</code>;</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 119580,
+          "reputation": 8662,
+          "user_id": 311364,
+          "user_type": "registered",
+          "accept_rate": 60,
+          "profile_image": "https://www.gravatar.com/avatar/372fabe5d3962d54b0c9474e35a05359?s=256&d=identicon&r=PG",
+          "display_name": "Bryce",
+          "link": "https://stackoverflow.com/users/311364/bryce"
+        },
+        "is_accepted": false,
+        "score": 14,
+        "last_activity_date": 1406316273,
+        "last_edit_date": 1406316273,
+        "creation_date": 1402812266,
+        "answer_id": 24227019,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>If the strings are static, you're best off with:</p>\n\n<pre><code>const char *my_array[] = {\"eenie\",\"meenie\",\"miney\"};\n</code></pre>\n\n<p>While not part of basic ANSI C, chances are your environment supports the syntax.  These strings are immutable (read-only), and thus in many environments use less overhead than dynamically building a string array.  </p>\n\n<p>For example in small micro-controller projects, this syntax uses program memory rather than (usually) more precious ram memory. AVR-C is an example environment supporting this syntax, but so do most of the other ones.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 2340505,
+          "reputation": 306,
+          "user_id": 2051908,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/7806d8cc01a432216eb1cd8d9a75718a?s=256&d=identicon&r=PG",
+          "display_name": "mengo",
+          "link": "https://stackoverflow.com/users/2051908/mengo"
+        },
+        "is_accepted": false,
+        "score": 13,
+        "last_activity_date": 1667506716,
+        "last_edit_date": 1667506716,
+        "creation_date": 1417470015,
+        "answer_id": 27237843,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>You can do it using heap memory (through <em>malloc()</em> invocation) like other answers reported here, but you must always manage the memory (use <em>free()</em> function every time you call your function).</p>\n<p>You can also do it with a static array:</p>\n<pre><code>char* returnArrayPointer()\n{\n    static char array[SIZE];\n\n    // Do something in your array here\n\n    return array;\n}\n</code></pre>\n<p>You can then use it without worrying about memory management.</p>\n<pre><code>int main()\n{\n    char* myArray = returnArrayPointer();\n    /* Use your array here */\n    /* Don't worry to free memory here */\n}\n</code></pre>\n<p>In this example you must use static keyword in array definition to set to application-long the array lifetime, so it will not destroyed after return statement.</p>\n<p>Of course, in this way  you occupy SIZE bytes in your memory for the entire application life, so size it properly!</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 12480,
+          "reputation": 125874,
+          "user_id": 24587,
+          "user_type": "registered",
+          "accept_rate": 83,
+          "profile_image": "https://www.gravatar.com/avatar/eee8bfaac21bd749ecbf1f1a1783d9d0?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "Georg Sch&#246;lly",
+          "link": "https://stackoverflow.com/users/24587/georg-sch%c3%b6lly"
+        },
+        "is_accepted": false,
+        "community_owned_date": 1232842568,
+        "score": 12,
+        "last_activity_date": 1232879732,
+        "last_edit_date": 1495541406,
+        "creation_date": 1232838316,
+        "answer_id": 476851,
+        "question_id": 476843,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>I'm just speculating:</p>\n\n<p>I think that the variable defined in the ivars allocates the space right in the object. This prevents you from creating accessors because you can't give an array by value to a function but only through a pointer. Therefore you have to use a pointer in the ivars:</p>\n\n<pre><code>int *doubleDigits;\n</code></pre>\n\n<p>And then allocate the space for it in the init-method:</p>\n\n<pre><code>@synthesize doubleDigits;\n\n- (id)init {\n    if (self = [super init]) {\n        doubleDigits = malloc(sizeof(int) * 10);\n        /*\n         * This works, but is dangerous (forbidden) because bufferDoubleDigits\n         * gets deleted at the end of -(id)init because it's on the stack:\n         * int bufferDoubleDigits[] = {1,2,3,4,5,6,7,8,9,10};\n         * [self setDoubleDigits:bufferDoubleDigits];\n         *\n         * If you want to be on the safe side use memcpy() (needs #include &lt;string.h&gt;)\n         * doubleDigits = malloc(sizeof(int) * 10);\n         * int bufferDoubleDigits[] = {1,2,3,4,5,6,7,8,9,10};\n         * memcpy(doubleDigits, bufferDoubleDigits, sizeof(int) * 10);\n         */\n    }\n    return self;\n}\n\n- (void)dealloc {\n    free(doubleDigits);\n    [super dealloc];\n}\n</code></pre>\n\n<p>In this case the interface looks like this:</p>\n\n<pre><code>@interface MyClass : NSObject {\n    int *doubleDigits;\n}\n@property int *doubleDigits;\n</code></pre>\n\n<p><strong>Edit:</strong></p>\n\n<p>I'm really unsure wether it's allowed to do this, are those values really on the stack or are they stored somewhere else? They are probably stored on the stack and therefore not safe to use in this context. (See the <a href=\"https://stackoverflow.com/questions/476961/where-is-an-array-initialized-by-an-initializer-list-stored\">question on initializer lists</a>)</p>\n\n<pre><code>int bufferDoubleDigits[] = {1,2,3,4,5,6,7,8,9,10};\n[self setDoubleDigits:bufferDoubleDigits];\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 19078,
+          "reputation": 146940,
+          "user_id": 44389,
+          "user_type": "registered",
+          "accept_rate": 84,
+          "profile_image": "https://www.gravatar.com/avatar/eed60bdfc964ec62cc48aa6020a03d7b?s=256&d=identicon&r=PG",
+          "display_name": "Noldorin",
+          "link": "https://stackoverflow.com/users/44389/noldorin"
+        },
+        "is_accepted": false,
+        "score": 12,
+        "last_activity_date": 1246906258,
+        "creation_date": 1246906258,
+        "answer_id": 1088650,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 2.5",
+        "body": "<p>In ANSI C:</p>\n\n<pre><code>char* strings[3];\nstrings[0] = \"foo\";\nstrings[1] = \"bar\";\nstrings[2] = \"baz\";\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1330858,
+          "reputation": 4280,
+          "user_id": 1274815,
+          "user_type": "registered",
+          "profile_image": "https://www.gravatar.com/avatar/cfa80d65597d3e43664c762cbb715e38?s=256&d=identicon&r=PG",
+          "display_name": "gbulmer",
+          "link": "https://stackoverflow.com/users/1274815/gbulmer"
+        },
+        "is_accepted": false,
+        "score": 12,
+        "last_activity_date": 1555445634,
+        "last_edit_date": 1555445634,
+        "creation_date": 1332542084,
+        "answer_id": 9847344,
+        "question_id": 9846920,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Because you are displaying on an LCD, I am assuming this is an embedded system.</p>\n\n<p>Don't put the data into a header.</p>\n\n<p>Put the data into an ordinary C or C++ file. Compile this. It might only contain the data, that is okay, and makes it easy to update.</p>\n\n<p>Then use the header file to give access to the data.</p>\n\n<p>For example, in a images.c file:</p>\n\n<pre><code>#include \"images.h\"\nconst byte numbers1[MAX_NUMBERS1] = { ... };\nbyte numbers2[MAX_NUMBERS2];       // will be initialsied to 0\n</code></pre>\n\n<p>Then images.h is:</p>\n\n<pre><code>#ifndef _IMAGES_H_\n#define _IMAGES_H_\n\ntypedef unsigned char byte;\n#define MAX_NUMBERS1 (450)\n        // different constants in case you change something        \n#define MAX_NUMBERS2 (450)      \n       // even better if you can do const static int MAX_NUMBERS1=450; \n       // but depends on the compiler\nextern const byte numbers1[MAX_NUMBERS1] = { ... };\nextern byte numbers2[MAX_NUMBERS2];       // will be initialised to 0\n\n#endif\n</code></pre>\n\n<p>Then all other .c files in the program can access them.</p>\n\n<p>It is (almost) always a bad idea to put a <strong>definition</strong> of a <strong>variable</strong> into a header file.</p>\n\n<p>A <strong>declaration</strong> of a variable, eg.\n<code>extern byte numbers2[MAX_NUMBERS2];</code>\nis telling the C compiler that there is an array variable called <code>numbers2</code> <em>somewhere else</em> in the final, linked program. If the linker doesn't get that definition (from somewhere else) then it will raise an error because there is no space for the variable allocated.</p>\n\n<p>A <strong>definition</strong> of a variable (notice no extern), eg.\n<code>byte numbers2[MAX_NUMBERS2];</code>\nis effectively telling the C compiler that there is an array variable called <code>numbers2</code> and it should allocate the space here, in the resulting object code from this source file, and this will be used to hold the value of the variable in the final, linked program.</p>\n\n<p>The space for <code>numbers2</code> is <em>not</em> allocated by the C compiler when it sees a declaration (preceded by <code>extern</code>), it is allocated when it sees the actual definition (no <code>extern</code>).</p>\n\n<p>So, if you put the actual definition of any variable in a header file, and include it into more than one source code files (.c), the C compiler will allocate space for the variable more than once. Then the linker will give an error (usually multiple definitions of the same name).</p>\n\n<p>There is a more subtle problem. If, when first developing the program, the header file is only included is one source file, then the program will compile and link correctly. Then, at a later date, if a second source file includes the header (maybe someone has just split the original source code file into two files), the linker will raise a 'multiple definitions' error. This can be very confusing because the program used to compile and link, and apparently nothing has changed.</p>\n\n<p><em>Summary</em><br>\nNever allocate space for a <strong>variable</strong> by putting a <strong>definition</strong> in a header file. Only put variable <strong>declarations</strong> in header files. </p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1380502,
+          "reputation": 8060,
+          "user_id": 1313611,
+          "user_type": "registered",
+          "accept_rate": 100,
+          "profile_image": "https://www.gravatar.com/avatar/9ee895c4ad3fa29cf3aaa4abddda289f?s=256&d=identicon&r=PG",
+          "display_name": "pyrospade",
+          "link": "https://stackoverflow.com/users/1313611/pyrospade"
+        },
+        "is_accepted": false,
+        "score": 12,
+        "last_activity_date": 1667506913,
+        "last_edit_date": 1667506913,
+        "creation_date": 1343270081,
+        "answer_id": 11661502,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>Use this deliciously evil implementation:</p>\n<p><b>array.h</b></p>\n<pre class=\"lang-none prettyprint-override\"><code>#define IMPORT_ARRAY(TYPE)    \\\n    \\\nstruct TYPE##Array {    \\\n    TYPE* contents;    \\\n    size_t size;    \\\n};    \\\n    \\\nstruct TYPE##Array new_##TYPE##Array() {    \\\n    struct TYPE##Array a;    \\\n    a.contents = NULL;    \\\n    a.size = 0;    \\\n    return a;    \\\n}    \\\n    \\\nvoid array_add(struct TYPE##Array* o, TYPE value) {    \\\n    TYPE* a = malloc((o-&gt;size + 1) * sizeof(TYPE));    \\\n    TYPE i;    \\\n    for(i = 0; i &lt; o-&gt;size; ++i) {    \\\n        a[i] = o-&gt;contents[i];    \\\n    }    \\\n    ++(o-&gt;size);    \\\n    a[o-&gt;size - 1] = value;    \\\n    free(o-&gt;contents);    \\\n    o-&gt;contents = a;    \\\n}    \\\nvoid array_destroy(struct TYPE##Array* o) {    \\\n    free(o-&gt;contents);    \\\n}    \\\nTYPE* array_begin(struct TYPE##Array* o) {    \\\n    return o-&gt;contents;    \\\n}    \\\nTYPE* array_end(struct TYPE##Array* o) {    \\\n    return o-&gt;contents + o-&gt;size;    \\\n}\n</code></pre>\n<p><b>main.c</b></p>\n<pre><code>#include &lt;stdlib.h&gt;\n#include &quot;array.h&quot;\n\nIMPORT_ARRAY(int);\n\nstruct intArray return_an_array() {\n    struct intArray a;\n    a = new_intArray();\n    array_add(&amp;a, 1);\n    array_add(&amp;a, 2);\n    array_add(&amp;a, 3);\n    return a;\n}\n\nint main() {\n    struct intArray a;\n    int* it;\n    int* begin;\n    int* end;\n    a = return_an_array();\n    begin = array_begin(&amp;a);\n    end = array_end(&amp;a);\n    for(it = begin; it != end; ++it) {\n        printf(&quot;%d &quot;, *it);\n    }\n    array_destroy(&amp;a);\n    getchar();\n    return 0;\n}\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 84526,
+          "reputation": 24795,
+          "user_id": 236222,
+          "user_type": "registered",
+          "accept_rate": 92,
+          "profile_image": "https://www.gravatar.com/avatar/cf4f3c341534395199d4dbe35a432f9d?s=256&d=identicon&r=PG",
+          "display_name": "Jay",
+          "link": "https://stackoverflow.com/users/236222/jay"
+        },
+        "is_accepted": false,
+        "score": 12,
+        "last_activity_date": 1461433551,
+        "last_edit_date": 1461433551,
+        "creation_date": 1362153837,
+        "answer_id": 15161860,
+        "question_id": 15161774,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>If you need an array of strings. There are two ways:</p>\n\n<p><strong>1. Two Dimensional Array of characters</strong></p>\n\n<p>In this case, you will have to know the size of your strings beforehand. It looks like below: </p>\n\n<pre><code>// This is an array for storing 10 strings,\n// each of length up to 49 characters (excluding the null terminator).\nchar arr[10][50]; \n</code></pre>\n\n<p><strong>2. An array of character pointers</strong></p>\n\n<p>It looks like below:    </p>\n\n<pre><code>// In this case you have an array of 10 character pointers \n// and you will have to allocate memory dynamically for each string.\nchar *arr[10];\n\n// This allocates a memory for 50 characters.\n// You'll need to allocate memory for each element of the array.\narr[1] = malloc(50 *sizeof(char));\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 2815888,
+          "reputation": 144,
+          "user_id": 2420980,
+          "user_type": "registered",
+          "profile_image": "https://i.sstatic.net/yFITF.jpg?s=256",
+          "display_name": "Christakitos",
+          "link": "https://stackoverflow.com/users/2420980/christakitos"
+        },
+        "is_accepted": false,
+        "score": 12,
+        "last_activity_date": 1679666117,
+        "last_edit_date": 1679666117,
+        "creation_date": 1433789315,
+        "answer_id": 30716813,
+        "question_id": 10468128,
+        "content_license": "CC BY-SA 4.0",
+        "body": "<p>I think you could write it this way too. I am also a student, so I understand your struggle.</p>\n<pre><code>#include &lt;stdio.h&gt;\n#define n 3\n\nstruct {\n    double p[3]; // Position\n    double v[3]; // Velocity\n    double a[3]; // Acceleration\n    double radius;\n    double mass;\n} bodies[n];\n</code></pre>\n"
+      },
+      {
+        "owner": {
+          "account_id": 1827,
+          "reputation": 100817,
+          "user_id": 2509,
+          "user_type": "registered",
+          "accept_rate": 88,
+          "profile_image": "https://www.gravatar.com/avatar/a0b76a96bc18dfe728fa8774ed32d321?s=256&d=identicon&r=PG&f=y&so-version=2",
+          "display_name": "dmckee --- ex-moderator kitten",
+          "link": "https://stackoverflow.com/users/2509/dmckee-ex-moderator-kitten"
+        },
+        "is_accepted": false,
+        "score": 9,
+        "last_activity_date": 1246906170,
+        "creation_date": 1246906170,
+        "answer_id": 1088644,
+        "question_id": 1088622,
+        "content_license": "CC BY-SA 2.5",
+        "body": "<p>The string literals are <code>const char *</code>s.</p>\n\n<p>And your use of parenthesis is odd. You probably mean</p>\n\n<pre><code>const char *a[2] = {\"blah\", \"hmm\"};\n</code></pre>\n\n<p>which declares an array of two pointers to constant characters, and initializes them to point at two hardcoded string constants.</p>\n"
+      },
+      {
+        "owner": {
+          "account_id": 441874,
+          "reputation": 3980,
+          "user_id": 832215,
+          "user_type": "registered",
+          "accept_rate": 96,
+          "profile_image": "https://www.gravatar.com/avatar/804d17a198356874636b6d903905f7b2?s=256&d=identicon&r=PG",
+          "display_name": "Man of One Way",
+          "link": "https://stackoverflow.com/users/832215/man-of-one-way"
+        },
+        "is_accepted": false,
+        "score": 9,
+        "last_activity_date": 1430772998,
+        "last_edit_date": 1430772998,
+        "creation_date": 1343242178,
+        "answer_id": 11656571,
+        "question_id": 11656532,
+        "content_license": "CC BY-SA 3.0",
+        "body": "<p>In your case, you are creating an array on the stack and once you leave the function scope, the array will be deallocated. Instead, create a dynamically allocated array and return a pointer to it.</p>\n\n<pre><code>char * returnArray(char *arr, int size) {\n    char *new_arr = malloc(sizeof(char) * size);\n    for(int i = 0; i &lt; size; ++i) {\n        new_arr[i] = arr[i];\n    }\n    return new_arr;\n}\n\nint main() {\n\n    char arr[7]= {1,0,0,0,0,1,1};\n    char *new_arr = returnArray(arr, 7);\n\n    // don't forget to free the memory after you're done with the array\n    free(new_arr);\n\n}\n</code></pre>\n"
+      }
+    ],
+    "has_more": true,
+    "quota_max": 300,
+    "quota_remaining": 235
+  }
