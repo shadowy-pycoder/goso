@@ -26,6 +26,7 @@ var (
 	codeEndIdx   int
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
 	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
+	divPattern   = regexp.MustCompile(`<div.*?>`)
 	r            = strings.NewReplacer("<p>", "",
 		"</p>", "",
 		"<strong>", "\033[1m",
@@ -48,6 +49,7 @@ var (
 		"</del>", "\033[0m",
 		"<ins>", "",
 		"</ins>", "",
+		"</div>", "",
 	)
 )
 
@@ -193,6 +195,7 @@ func fmtText(text string) string {
 	t := html.UnescapeString(text)
 	t = r.Replace(t)
 	t = codePattern.ReplaceAllString(t, "<pre>")
+	t = divPattern.ReplaceAllString(t, "")
 	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
 	return t
 }
