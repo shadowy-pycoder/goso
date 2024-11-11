@@ -3,14 +3,55 @@ package goso
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"net/http"
-	"net/url"
+	netUrl "net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
+
+	"github.com/alecthomas/chroma/v2/formatters"
+	"github.com/alecthomas/chroma/v2/lexers"
+	"github.com/alecthomas/chroma/v2/styles"
 )
 
-type GoogleSearchResult struct {
+const (
+	codeStartTag string = "<pre><code>"
+	codeEndTag   string = "</code></pre>"
+)
+
+var (
+	codeStartIdx int
+	codeEndIdx   int
+	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
+	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
+	r            = strings.NewReplacer("<p>", "",
+		"</p>", "",
+		"<strong>", "\033[1m",
+		"</strong>", "\033[0m",
+		"<em>", "\033[3m",
+		"</em>", "\033[0m",
+		"<ul>", "",
+		"</ul>", "",
+		"<ol>", "",
+		"</ol>", "",
+		"<li>", " - ",
+		"</li>", "",
+		"<hr>", "_______________________________________________________________________________________________________",
+		"<b>", "\033[1m",
+		"</b>", "\033[0m",
+		"<br>", "\n",
+		"<blockquote>", "\033[3m",
+		"</blockquote>", "\033[0m",
+		"<del>", "\033[9m",
+		"</del>", "\033[0m",
+		"<ins>", "",
+		"</ins>", "",
+	)
+)
+
+type googleSearchResult struct {
 	Kind string `json:"kind"`
 	URL  struct {
 		Type     string `json:"type"`
@@ -109,7 +150,7 @@ type GoogleSearchResult struct {
 	} `json:"items"`
 }
 
-type StackOverlowResult struct {
+type stackOverlowResult struct {
 	Items []struct {
 		Owner struct {
 			AccountID    int    `json:"account_id"`
@@ -137,6 +178,25 @@ type StackOverlowResult struct {
 	QuotaRemaining int  `json:"quota_remaining"`
 }
 
+type Config struct {
+	ApiKey       string
+	SearchEngine string
+	Query        string
+	Style        string
+	Lexer        string
+	QuestionNum  int
+	AnswerNum    int
+	Client       *http.Client
+}
+
+func fmtText(text string) string {
+	t := html.UnescapeString(text)
+	t = r.Replace(t)
+	t = codePattern.ReplaceAllString(t, "<pre>")
+	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
+	return t
+}
+
 func openFile(path string) (*os.File, func(), error) {
 	f, err := os.Open(filepath.FromSlash(fmt.Sprintf("testdata/%s.json", path)))
 	if err != nil {
@@ -145,79 +205,114 @@ func openFile(path string) (*os.File, func(), error) {
 	return f, func() { f.Close() }, nil
 }
 
-func GetAnswers(client *http.Client) (GoogleSearchResult, error) {
+func getText(conf *Config) (*stackOverlowResult, error) {
 
-	apiKey := os.Getenv("GOOGLE_API_KEY")
-	se := os.Getenv("GOOGLE_SE")
-	query := "Create simple echo server in Go"
 	url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s",
-		apiKey, se, url.QueryEscape(query))
+		conf.ApiKey, conf.SearchEngine, netUrl.QueryEscape(conf.Query))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return GoogleSearchResult{}, err
+		return nil, err
 	}
-	res, err := client.Do(req)
+	res, err := conf.Client.Do(req)
 	if err != nil {
-		return GoogleSearchResult{}, err
+		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
-		return GoogleSearchResult{}, err
+		return nil, fmt.Errorf("failed connecting to Google API: %s", res.Status)
 	}
-	var gsResp GoogleSearchResult
+	var gsResp googleSearchResult
 	err = json.NewDecoder(res.Body).Decode(&gsResp)
-	// var gsResp GoogleSearchResult
+	// var gsResp googleSearchResult
 	// f, close, err := openFile("goso")
 	// if err != nil {
-	// 	return GoogleSearchResult{}, err
+	// 	return nil, err
 	// }
 	// defer close()
 	// err = json.NewDecoder(f).Decode(&gsResp)
 	if err != nil {
-		return GoogleSearchResult{}, err
-	}
-	return gsResp, nil
-}
-
-func GetText(client *http.Client) (StackOverlowResult, error) {
-	resp, err := GetAnswers(client)
-	if err != nil {
-		println(err)
+		return nil, err
 	}
 	var answers string
-	for _, item := range resp.Items {
-		u, _ := url.Parse(item.Link)
+	for _, item := range gsResp.Items {
+		u, _ := netUrl.Parse(item.Link)
 		answers += strings.Split(u.Path, "/")[2]
 		answers += ";"
 	}
 	answers = strings.TrimSuffix(answers, ";")
-	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
-		url.QueryEscape(answers))
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	url = fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
+		netUrl.QueryEscape(answers))
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return StackOverlowResult{}, err
+		return nil, err
 	}
-	res, err := client.Do(req)
+	res, err = conf.Client.Do(req)
 	if err != nil {
-		return StackOverlowResult{}, err
+		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
-		println(res.Status)
-		return StackOverlowResult{}, err
+		return nil, fmt.Errorf("failed connecting to Stack Overflow API: %s", res.Status)
 	}
-	var gsResp StackOverlowResult
-
-	err = json.NewDecoder(res.Body).Decode(&gsResp)
+	var soResp stackOverlowResult
+	err = json.NewDecoder(res.Body).Decode(&soResp)
+	// var soResp stackOverlowResult
 	// f, close, err := openFile("answers")
 	// if err != nil {
-	// 	return StackOverlowResult{}, err
+	// 	return stackOverlowResult{}, err
 	// }
 	// defer close()
 
-	// err = json.NewDecoder(f).Decode(&gsResp)
+	// err = json.NewDecoder(f).Decode(&soResp)
 	if err != nil {
-		return StackOverlowResult{}, err
+		return nil, err
 	}
-	return gsResp, nil
+	return &soResp, nil
+}
+
+func GetAnswers(conf *Config) error {
+	var sb strings.Builder
+	style := styles.Get(conf.Style)
+	if style == nil {
+		style = styles.Fallback
+	}
+	formatter := formatters.Get("terminal16m")
+	if formatter == nil {
+		formatter = formatters.Fallback
+	}
+	lexer := lexers.Get(conf.Lexer)
+	if lexer == nil {
+		lexer = lexers.Fallback
+	}
+	resp, err := getText(conf)
+	if err != nil {
+		return err
+	}
+	for _, item := range resp.Items {
+		t := fmtText(item.Body)
+		codeStartIdx = strings.Index(t, codeStartTag)
+		for codeStartIdx != -1 {
+			codeEndIdx = strings.Index(t, codeEndTag)
+			if codeEndIdx == -1 {
+				break
+			}
+			iterator, err := lexer.Tokenise(nil, t[codeStartIdx+len(codeStartTag):codeEndIdx])
+			if err != nil {
+				return err
+			}
+			err = formatter.Format(&sb, style, iterator)
+			if err != nil {
+				return err
+			}
+			t = t[:codeStartIdx] + sb.String() + t[codeEndIdx+len(codeEndTag):]
+			codeStartIdx = strings.Index(t, codeStartTag)
+			sb.Reset()
+		}
+
+		t = strings.ReplaceAll(t, "<code>", "\033[32m")
+		t = strings.ReplaceAll(t, "</code>", "\033[0m")
+
+		println(t)
+	}
+	return nil
 }
