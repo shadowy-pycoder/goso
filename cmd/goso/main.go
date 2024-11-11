@@ -14,7 +14,15 @@ import (
 	"github.com/shadowy-pycoder/goso"
 )
 
-var codePattern = regexp.MustCompile(`<pre\s.*?>`)
+const (
+	codeStartTag string = "<pre><code>"
+	codeEndTag   string = "</code></pre>"
+)
+
+var (
+	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
+	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
+)
 
 func fmtText(text string) string {
 	t := html.UnescapeString(text)
@@ -36,7 +44,12 @@ func fmtText(text string) string {
 	t = strings.ReplaceAll(t, "<br>", "\n")
 	t = strings.ReplaceAll(t, "<blockquote>", "\033[3m")
 	t = strings.ReplaceAll(t, "</blockquote>", "\033[0m")
+	t = strings.ReplaceAll(t, "<del>", "\033[9m")
+	t = strings.ReplaceAll(t, "</del>", "\033[0m")
+	t = strings.ReplaceAll(t, "<ins>", "")
+	t = strings.ReplaceAll(t, "</ins>", "")
 	t = codePattern.ReplaceAllString(t, "<pre>")
+	t = aHrefPattern.ReplaceAllString(t, "\n- $2")
 	return t
 }
 
@@ -66,30 +79,27 @@ func main() {
 	}
 	for _, item := range resp.Items {
 		t := fmtText(item.Body)
-		codeStartTag := "<pre><code>"
-		codeEndTag := "</code></pre>"
 		codeStartIdx := strings.Index(t, codeStartTag)
+		var codeEndIdx int
 		for codeStartIdx != -1 {
-			codeEndIdx := strings.Index(t, codeEndTag)
-			if codeEndIdx != -1 && codeEndIdx > codeStartIdx {
-				iterator, err := lexer.Tokenise(nil, t[codeStartIdx+len(codeStartTag):codeEndIdx])
-				if err != nil {
-					println(err)
-				}
-				err = formatter.Format(&sb, style, iterator)
-				if err != nil {
-					println(err)
-				}
-				t = t[:codeStartIdx] + sb.String() + t[codeEndIdx+len(codeEndTag):]
-				codeStartIdx = strings.Index(t, codeStartTag)
-				sb.Reset()
-			} else if codeEndIdx != -1 && codeEndIdx < codeStartIdx {
-				t = t[:codeEndIdx] + t[codeEndIdx+len(codeEndTag):]
-			} else {
+			codeEndIdx = strings.Index(t, codeEndTag)
+			if codeEndIdx == -1 {
+				println("malformed html")
 				break
 			}
-
+			iterator, err := lexer.Tokenise(nil, t[codeStartIdx+len(codeStartTag):codeEndIdx])
+			if err != nil {
+				println(err)
+			}
+			err = formatter.Format(&sb, style, iterator)
+			if err != nil {
+				println(err)
+			}
+			t = t[:codeStartIdx] + sb.String() + t[codeEndIdx+len(codeEndTag):]
+			codeStartIdx = strings.Index(t, codeStartTag)
+			sb.Reset()
 		}
+
 		t = strings.ReplaceAll(t, "<code>", "\033[32m")
 		t = strings.ReplaceAll(t, "</code>", "\033[0m")
 
