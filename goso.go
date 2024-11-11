@@ -27,7 +27,8 @@ var (
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
 	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
 	divPattern   = regexp.MustCompile(`<div.*?>`)
-	r            = strings.NewReplacer("<p>", "",
+	r            = strings.NewReplacer(
+		"<p>", "",
 		"</p>", "",
 		"<strong>", "\033[1m",
 		"</strong>", "\033[0m",
@@ -39,9 +40,15 @@ var (
 		"</ol>", "",
 		"<li>", " - ",
 		"</li>", "",
-		"<hr>", "_______________________________________________________________________________________________________",
+		"<hr>", "────────────────────────────────────────────────────────────────────────────────",
 		"<b>", "\033[1m",
 		"</b>", "\033[0m",
+		"<h1>", "\033[1m",
+		"</h1>", "\033[0m",
+		"<h2>", "\033[1m",
+		"</h2>", "\033[0m",
+		"<h3>", "\033[1m",
+		"</h3>", "\033[0m",
 		"<br>", "\n",
 		"<blockquote>", "\033[3m",
 		"</blockquote>", "\033[0m",
@@ -50,6 +57,8 @@ var (
 		"<ins>", "",
 		"</ins>", "",
 		"</div>", "",
+		"<code>", "\033[32m",
+		"</code>", "\033[0m",
 	)
 )
 
@@ -191,10 +200,12 @@ type Config struct {
 	Client       *http.Client
 }
 
+func prepareText(text string) string {
+	return codePattern.ReplaceAllString(text, "<pre>")
+}
+
 func fmtText(text string) string {
-	t := html.UnescapeString(text)
-	t = r.Replace(t)
-	t = codePattern.ReplaceAllString(t, "<pre>")
+	t := r.Replace(html.UnescapeString(text))
 	t = divPattern.ReplaceAllString(t, "")
 	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
 	return t
@@ -274,7 +285,7 @@ func getText(conf *Config) (*stackOverlowResult, error) {
 }
 
 func GetAnswers(conf *Config) error {
-	var sb strings.Builder
+	var result strings.Builder
 	style := styles.Get(conf.Style)
 	if style == nil {
 		style = styles.Fallback
@@ -292,30 +303,32 @@ func GetAnswers(conf *Config) error {
 		return err
 	}
 	for _, item := range resp.Items {
-		t := fmtText(item.Body)
+		t := prepareText(item.Body)
 		codeStartIdx = strings.Index(t, codeStartTag)
+		if codeStartIdx == -1 {
+			result.WriteString(fmtText(t))
+		}
 		for codeStartIdx != -1 {
 			codeEndIdx = strings.Index(t, codeEndTag)
 			if codeEndIdx == -1 {
 				break
 			}
-			iterator, err := lexer.Tokenise(nil, t[codeStartIdx+len(codeStartTag):codeEndIdx])
+			result.WriteString(fmtText(t[:codeStartIdx]))
+			iterator, err := lexer.Tokenise(nil, html.UnescapeString(t[codeStartIdx+len(codeStartTag):codeEndIdx]))
 			if err != nil {
 				return err
 			}
-			err = formatter.Format(&sb, style, iterator)
+			err = formatter.Format(&result, style, iterator)
 			if err != nil {
 				return err
 			}
-			t = t[:codeStartIdx] + sb.String() + t[codeEndIdx+len(codeEndTag):]
+			t = t[codeEndIdx+len(codeEndTag):]
 			codeStartIdx = strings.Index(t, codeStartTag)
-			sb.Reset()
+			if codeStartIdx == -1 {
+				result.WriteString(fmtText(t))
+			}
 		}
-
-		t = strings.ReplaceAll(t, "<code>", "\033[32m")
-		t = strings.ReplaceAll(t, "</code>", "\033[0m")
-
-		println(t)
 	}
+	fmt.Println(result.String())
 	return nil
 }
