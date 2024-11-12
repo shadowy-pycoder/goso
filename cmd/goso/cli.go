@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -39,15 +40,53 @@ func root(args []string) error {
 			Timeout: time.Duration(10) * time.Second,
 		},
 	}
+	var (
+		lex, style string
+		qn, an     int
+		set        bool
+		err        error
+	)
+	lex, set = os.LookupEnv("GOSO_LEXER")
+	if !set {
+		lex = "bash"
+	}
+	style, set = os.LookupEnv("GOSO_STYLE")
+	if !set {
+		style = "onedark"
+	}
+	q, set := os.LookupEnv("GOSO_QUESTIONS")
+	if !set {
+		qn = 1
+	} else {
+		qn, err = strconv.Atoi(q)
+		if err != nil {
+			return fmt.Errorf("the number of questions should be a valid integer")
+		}
+		if qn < 1 || qn > 10 {
+			qn = 1
+		}
+	}
+	a, set := os.LookupEnv("GOSO_ANSWERS")
+	if !set {
+		an = 1
+	} else {
+		an, err = strconv.Atoi(a)
+		if err != nil {
+			return fmt.Errorf("the number of answers should be a valid integer")
+		}
+		if an < 1 || an > 10 {
+			an = 1
+		}
+	}
 	flags := flag.NewFlagSet(app, flag.ExitOnError)
-	flags.StringVar(&conf.Lexer, "l", "bash", "The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded")
-	flags.StringVar(&conf.Style, "s", "onedark", "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
-	qNum := flags.Int("q", 1, "The number of results [min=1, max=10]")
+	flags.StringVar(&conf.Lexer, "l", lex, "The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded")
+	flags.StringVar(&conf.Style, "s", style, "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
+	qNum := flags.Int("q", qn, "The number of results [min=1, max=10]")
 	if *qNum < 1 || *qNum > 10 {
 		*qNum = 1
 	}
 	conf.QuestionNum = *qNum
-	aNum := flags.Int("a", 1, "The maximum number of answers for each result [min=1, max=10]")
+	aNum := flags.Int("a", an, "The maximum number of answers for each result [min=1, max=10]")
 	if *aNum < 1 || *aNum > 10 {
 		*aNum = 1
 	}
@@ -60,14 +99,14 @@ func root(args []string) error {
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
-	apiKey, set := os.LookupEnv("GOOGLE_API_KEY")
+	apiKey, set := os.LookupEnv("GOSO_API_KEY")
 	if !set {
-		return fmt.Errorf("google api key is not set")
+		return fmt.Errorf("api key is not set")
 	}
 	conf.ApiKey = apiKey
-	se, set := os.LookupEnv("GOOGLE_SE")
+	se, set := os.LookupEnv("GOSO_SE")
 	if !set {
-		return fmt.Errorf("google search engine is not set")
+		return fmt.Errorf("search engine is not set")
 	}
 	conf.SearchEngine = se
 	conf.Query = strings.Join(flags.Args(), " ")
