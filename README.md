@@ -11,7 +11,7 @@ This tool uses [Custom Search JSON API](https://developers.google.com/custom-sea
 
 Setup your `Search Engine ID` like this:
 
-image
+![Screenshot from 2024-11-12 13-17-26](https://github.com/user-attachments/assets/3dd798fb-d9de-438a-aeeb-81ffc47e488b)
 
 Add variables to your environment:
 ```shell
@@ -62,4 +62,4 @@ goso  -l go -s onedark -q 1 -a 1 Sort maps in Golang
 ```
 Output:
 
-image
+![Screenshot from 2024-11-12 13-11-23](https://github.com/user-attachments/assets/986fb3bb-709a-411b-891f-977bb8cbe70f)
