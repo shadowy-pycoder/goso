@@ -82,15 +82,8 @@ func root(args []string) error {
 	flags.StringVar(&conf.Lexer, "l", lex, "The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded")
 	flags.StringVar(&conf.Style, "s", style, "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
 	qNum := flags.Int("q", qn, "The number of results [min=1, max=10]")
-	if *qNum < 1 || *qNum > 10 {
-		*qNum = 1
-	}
-	conf.QuestionNum = *qNum
 	aNum := flags.Int("a", an, "The maximum number of answers for each result [min=1, max=10]")
-	if *aNum < 1 || *aNum > 10 {
-		*aNum = 1
-	}
-	conf.AnswerNum = *aNum
+
 	flags.Usage = func() {
 		fmt.Print(usagePrefix)
 		flags.PrintDefaults()
@@ -99,6 +92,14 @@ func root(args []string) error {
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
+	if *qNum < 1 || *qNum > 10 {
+		*qNum = 1
+	}
+	conf.QuestionNum = *qNum
+	if *aNum < 1 || *aNum > 10 {
+		*aNum = 1
+	}
+	conf.AnswerNum = *aNum
 	apiKey, set := os.LookupEnv("GOSO_API_KEY")
 	if !set {
 		return fmt.Errorf("api key is not set")
@@ -113,5 +114,10 @@ func root(args []string) error {
 	if conf.Query == "" {
 		return fmt.Errorf("query is empty")
 	}
-	return goso.GetAnswers(conf)
+	answers, err := goso.GetAnswers(conf, goso.FetchGoogle, goso.FetchStackOverflow)
+	if err != nil {
+		return err
+	}
+	fmt.Println(answers)
+	return nil
 }

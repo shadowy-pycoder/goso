@@ -13,5 +13,5 @@ ${TEST_FILE}:
 
 .PHONY: bench
 bench: ${TEST_FILE}
-	./$< -test.bench=. -test.benchmem -test.run=^$$ -test.benchtime 1000x \
+	./$< -test.bench=. -test.benchmem -test.run=^$$ -test.benchtime 100x \
 	-test.cpuprofile='cpu.prof' -test.memprofile='mem.prof'

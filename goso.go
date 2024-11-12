@@ -1,14 +1,16 @@
 package goso
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"html"
+	"maps"
 	"net/http"
 	netUrl "net/url"
-	"os"
-	"path/filepath"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2/formatters"
@@ -17,8 +19,17 @@ import (
 )
 
 const (
-	codeStartTag string = "<pre><code>"
-	codeEndTag   string = "</code></pre>"
+	codeStartTag  string = "<pre><code>"
+	codeEndTag    string = "</code></pre>"
+	reset         string = "\033[0m"
+	bold          string = "\033[1m"
+	italic        string = "\033[3m"
+	strikethrough string = "\033[9m"
+	gray          string = "\033[37m"
+	blue          string = "\033[36m"
+	green         string = "\033[32m"
+	yellow        string = "\033[33m"
+	magenta       string = "\033[35m"
 )
 
 var (
@@ -27,13 +38,14 @@ var (
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
 	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
 	divPattern   = regexp.MustCompile(`<div.*?>`)
+	bqPattern    = regexp.MustCompile(`<blockquote.*?>`)
 	r            = strings.NewReplacer(
 		"<p>", "",
 		"</p>", "",
-		"<strong>", "\033[1m",
-		"</strong>", "\033[0m",
-		"<em>", "\033[3m",
-		"</em>", "\033[0m",
+		"<strong>", bold,
+		"</strong>", reset,
+		"<em>", italic,
+		"</em>", reset,
 		"<ul>", "",
 		"</ul>", "",
 		"<ol>", "",
@@ -41,28 +53,34 @@ var (
 		"<li>", " - ",
 		"</li>", "",
 		"<hr>", "────────────────────────────────────────────────────────────────────────────────",
-		"<b>", "\033[1m",
-		"</b>", "\033[0m",
-		"<h1>", "\033[1m",
-		"</h1>", "\033[0m",
-		"<h2>", "\033[1m",
-		"</h2>", "\033[0m",
-		"<h3>", "\033[1m",
-		"</h3>", "\033[0m",
+		"<b>", bold,
+		"</b>", reset,
+		"<h1>", bold,
+		"</h1>", reset,
+		"<h2>", bold,
+		"</h2>", reset,
+		"<h3>", bold,
+		"</h3>", reset,
 		"<br>", "\n",
-		"<blockquote>", "\033[3m",
-		"</blockquote>", "\033[0m",
-		"<del>", "\033[9m",
-		"</del>", "\033[0m",
+		"<blockquote>", italic,
+		"</blockquote>", reset,
+		"<del>", strikethrough,
+		"</del>", reset,
 		"<ins>", "",
 		"</ins>", "",
 		"</div>", "",
-		"<code>", "\033[32m",
-		"</code>", "\033[0m",
+		"<code>", green,
+		"</code>", reset,
+		"<br />", "",
+		"<hr />", "",
+		"<sup>", "",
+		"</sup>", "",
+		"<sub>", "",
+		"</sub>", "",
 	)
 )
 
-type googleSearchResult struct {
+type GoogleSearchResult struct {
 	Kind string `json:"kind"`
 	URL  struct {
 		Type     string `json:"type"`
@@ -161,7 +179,7 @@ type googleSearchResult struct {
 	} `json:"items"`
 }
 
-type stackOverlowResult struct {
+type StackOverflowResult struct {
 	Items []struct {
 		Owner struct {
 			AccountID    int    `json:"account_id"`
@@ -199,6 +217,37 @@ type Config struct {
 	AnswerNum    int
 	Client       *http.Client
 }
+type Answer struct {
+	Score int
+	Body  string
+	Link  string
+}
+
+func (a *Answer) String() string {
+	line := strings.Repeat("─", 80)
+	return fmt.Sprintf(`
+%s
+%s[%d]%s %s
+%s
+`, line, yellow, a.Score, reset, a.Link, line)
+}
+
+type Result struct {
+	Title       string
+	Link        string
+	QuestionId  int
+	UpvoteCount int
+	Answers     []*Answer
+}
+
+func (r *Result) String() string {
+	line := strings.Repeat("─", 80)
+	return fmt.Sprintf(`
+%s
+%s[%d]%s %s
+%s
+%s`, line, yellow, r.UpvoteCount, reset, r.Title, r.Link, line)
+}
 
 func prepareText(text string) string {
 	return codePattern.ReplaceAllString(text, "<pre>")
@@ -208,19 +257,11 @@ func fmtText(text string) string {
 	t := r.Replace(html.UnescapeString(text))
 	t = divPattern.ReplaceAllString(t, "")
 	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
+	t = bqPattern.ReplaceAllString(t, italic)
 	return t
 }
 
-func openFile(path string) (*os.File, func(), error) {
-	f, err := os.Open(filepath.FromSlash(fmt.Sprintf("testdata/%s.json", path)))
-	if err != nil {
-		return nil, nil, err
-	}
-	return f, func() { f.Close() }, nil
-}
-
-func getText(conf *Config) (*stackOverlowResult, error) {
-
+func FetchGoogle(conf *Config) (*GoogleSearchResult, error) {
 	url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s",
 		conf.ApiKey, conf.SearchEngine, netUrl.QueryEscape(conf.Query))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -235,32 +276,44 @@ func getText(conf *Config) (*stackOverlowResult, error) {
 	if res.StatusCode > 299 {
 		return nil, fmt.Errorf("failed connecting to Google API: %s", res.Status)
 	}
-	var gsResp googleSearchResult
+	var gsResp GoogleSearchResult
 	err = json.NewDecoder(res.Body).Decode(&gsResp)
-	// var gsResp googleSearchResult
-	// f, close, err := openFile("goso")
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer close()
-	// err = json.NewDecoder(f).Decode(&gsResp)
 	if err != nil {
 		return nil, err
 	}
-	var answers string
-	for _, item := range gsResp.Items {
+	return &gsResp, nil
+}
+
+func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, error) {
+
+	results := make(map[int]*Result)
+	questions := make([]string, 0, len(gr.Items))
+	for _, item := range gr.Items {
+		question := item.Pagemap.Question[0]
+		answerCount, _ := strconv.Atoi(question.Answercount)
+		if answerCount == 0 {
+			continue
+		}
+		upvoteCount, _ := strconv.Atoi(question.Upvotecount)
 		u, _ := netUrl.Parse(item.Link)
-		answers += strings.Split(u.Path, "/")[2]
-		answers += ";"
+		questionStr := strings.Split(u.Path, "/")[2]
+		questions = append(questions, questionStr)
+		questionId, _ := strconv.Atoi(questionStr)
+		results[questionId] = &Result{
+			Title:       item.Title,
+			Link:        item.Link,
+			QuestionId:  questionId,
+			UpvoteCount: upvoteCount,
+		}
 	}
-	answers = strings.TrimSuffix(answers, ";")
-	url = fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
-		netUrl.QueryEscape(answers))
-	req, err = http.NewRequest(http.MethodGet, url, nil)
+	question_ids := strings.Join(questions, ";")
+	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
+		netUrl.QueryEscape(question_ids))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	res, err = conf.Client.Do(req)
+	res, err := conf.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -268,24 +321,31 @@ func getText(conf *Config) (*stackOverlowResult, error) {
 	if res.StatusCode > 299 {
 		return nil, fmt.Errorf("failed connecting to Stack Overflow API: %s", res.Status)
 	}
-	var soResp stackOverlowResult
+	var soResp StackOverflowResult
 	err = json.NewDecoder(res.Body).Decode(&soResp)
-	// var soResp stackOverlowResult
-	// f, close, err := openFile("answers")
-	// if err != nil {
-	// 	return stackOverlowResult{}, err
-	// }
-	// defer close()
-
-	// err = json.NewDecoder(f).Decode(&soResp)
 	if err != nil {
 		return nil, err
 	}
-	return &soResp, nil
+	for _, item := range soResp.Items {
+		result, ok := results[item.QuestionID]
+		if !ok {
+			continue
+		}
+		result.Answers = append(result.Answers,
+			&Answer{
+				Score: item.Score,
+				Body:  item.Body,
+				Link:  fmt.Sprintf("https://stackoverflow.com/a/%d", item.AnswerID),
+			})
+	}
+	return results, nil
 }
 
-func GetAnswers(conf *Config) error {
-	var result strings.Builder
+func GetAnswers(conf *Config,
+	fetchResults func(*Config) (*GoogleSearchResult, error),
+	fetchAnswers func(*Config, *GoogleSearchResult) (map[int]*Result, error),
+) (string, error) {
+	var answers strings.Builder
 	style := styles.Get(conf.Style)
 	if style == nil {
 		style = styles.Fallback
@@ -298,37 +358,62 @@ func GetAnswers(conf *Config) error {
 	if lexer == nil {
 		lexer = lexers.Fallback
 	}
-	resp, err := getText(conf)
+	gsResp, err := fetchResults(conf)
 	if err != nil {
-		return err
+		return "", err
 	}
-	for _, item := range resp.Items {
-		t := prepareText(item.Body)
-		codeStartIdx = strings.Index(t, codeStartTag)
-		if codeStartIdx == -1 {
-			result.WriteString(fmtText(t))
+	results, err := fetchAnswers(conf, gsResp)
+	if err != nil {
+		return "", err
+	}
+	var qIdx int
+	for _, res := range slices.Backward(slices.SortedStableFunc(maps.Values(results), func(a, b *Result) int {
+		return cmp.Compare(a.UpvoteCount, b.UpvoteCount)
+	})) {
+		if qIdx >= conf.QuestionNum {
+			break
 		}
-		for codeStartIdx != -1 {
-			codeEndIdx = strings.Index(t, codeEndTag)
-			if codeEndIdx == -1 {
+		if len(res.Answers) == 0 {
+			continue
+		}
+		qIdx++
+		slices.SortStableFunc(res.Answers, func(a, b *Answer) int {
+			return cmp.Compare(a.Score, b.Score)
+		})
+		answers.WriteString(res.String())
+		var aIdx int
+		for _, ans := range slices.Backward(res.Answers) {
+			if aIdx >= conf.AnswerNum {
 				break
 			}
-			result.WriteString(fmtText(t[:codeStartIdx]))
-			iterator, err := lexer.Tokenise(nil, html.UnescapeString(t[codeStartIdx+len(codeStartTag):codeEndIdx]))
-			if err != nil {
-				return err
-			}
-			err = formatter.Format(&result, style, iterator)
-			if err != nil {
-				return err
-			}
-			t = t[codeEndIdx+len(codeEndTag):]
+			aIdx++
+			answers.WriteString(ans.String())
+			t := prepareText(ans.Body)
 			codeStartIdx = strings.Index(t, codeStartTag)
 			if codeStartIdx == -1 {
-				result.WriteString(fmtText(t))
+				answers.WriteString(fmtText(t))
+			}
+			for codeStartIdx != -1 {
+				codeEndIdx = strings.Index(t, codeEndTag)
+				if codeEndIdx == -1 {
+					break
+				}
+				answers.WriteString(fmtText(t[:codeStartIdx]))
+				iterator, err := lexer.Tokenise(nil, html.UnescapeString(t[codeStartIdx+len(codeStartTag):codeEndIdx]))
+				if err != nil {
+					return "", err
+				}
+				err = formatter.Format(&answers, style, iterator)
+				if err != nil {
+					return "", err
+				}
+				t = t[codeEndIdx+len(codeEndTag):]
+				codeStartIdx = strings.Index(t, codeStartTag)
+				if codeStartIdx == -1 {
+					answers.WriteString(fmtText(t))
+				}
 			}
 		}
 	}
-	fmt.Println(result.String())
-	return nil
+	return answers.String(), nil
 }
