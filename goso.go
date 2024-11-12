@@ -289,12 +289,15 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 	results := make(map[int]*Result)
 	questions := make([]string, 0, len(gr.Items))
 	for _, item := range gr.Items {
-		question := item.Pagemap.Question[0]
-		answerCount, _ := strconv.Atoi(question.Answercount)
-		if answerCount == 0 {
-			continue
+		var upvoteCount int
+		if len(item.Pagemap.Question) > 0 {
+			question := item.Pagemap.Question[0]
+			answerCount, _ := strconv.Atoi(question.Answercount)
+			if answerCount == 0 {
+				continue
+			}
+			upvoteCount, _ = strconv.Atoi(question.Upvotecount)
 		}
-		upvoteCount, _ := strconv.Atoi(question.Upvotecount)
 		u, _ := netUrl.Parse(item.Link)
 		questionStr := strings.Split(u.Path, "/")[2]
 		questions = append(questions, questionStr)
