@@ -36,7 +36,7 @@ var (
 	codeStartIdx int
 	codeEndIdx   int
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
-	aHrefPattern = regexp.MustCompile(`<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
+	aHrefPattern = regexp.MustCompile(`(?s)<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
 	divPattern   = regexp.MustCompile(`<div.*?>`)
 	bqPattern    = regexp.MustCompile(`<blockquote.*?>`)
 	r            = strings.NewReplacer(
