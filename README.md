@@ -1,4 +1,6 @@
 # goso - [Stack Overflow](https://stackoverflow.com/) CLI Tool written in Go
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/shadowy-pycoder/goso/go.yml)
+
 
 ## Installation
 
