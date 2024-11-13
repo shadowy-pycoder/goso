@@ -60,10 +60,10 @@ func root(args []string) error {
 	} else {
 		qn, err = strconv.Atoi(q)
 		if err != nil {
-			return fmt.Errorf("the number of questions should be a valid integer")
+			return fmt.Errorf("-q should be within [min=1, max=10], please check your env")
 		}
 		if qn < 1 || qn > 10 {
-			qn = 1
+			return fmt.Errorf("-q should be within [min=1, max=10], please check your env")
 		}
 	}
 	a, set := os.LookupEnv("GOSO_ANSWERS")
@@ -72,17 +72,17 @@ func root(args []string) error {
 	} else {
 		an, err = strconv.Atoi(a)
 		if err != nil {
-			return fmt.Errorf("the number of answers should be a valid integer")
+			return fmt.Errorf("-a should be within [min=1, max=10], please check your env")
 		}
 		if an < 1 || an > 10 {
-			an = 1
+			return fmt.Errorf("-a should be within [min=1, max=10], please check your env")
 		}
 	}
 	flags := flag.NewFlagSet(app, flag.ExitOnError)
 	flags.StringVar(&conf.Lexer, "l", lex, "The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded")
 	flags.StringVar(&conf.Style, "s", style, "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
-	qNum := flags.Int("q", qn, "The number of results [min=1, max=10]")
-	aNum := flags.Int("a", an, "The maximum number of answers for each result [min=1, max=10]")
+	qNum := flags.Int("q", qn, "The number of questions [min=1, max=10]")
+	aNum := flags.Int("a", an, "The number of answers for each result [min=1, max=10]")
 
 	flags.Usage = func() {
 		fmt.Print(usagePrefix)
@@ -93,11 +93,11 @@ func root(args []string) error {
 		return err
 	}
 	if *qNum < 1 || *qNum > 10 {
-		*qNum = 1
+		return fmt.Errorf("-q should be within [min=1, max=10]")
 	}
 	conf.QuestionNum = *qNum
 	if *aNum < 1 || *aNum > 10 {
-		*aNum = 1
+		return fmt.Errorf("-a should be within [min=1, max=10]")
 	}
 	conf.AnswerNum = *aNum
 	apiKey, set := os.LookupEnv("GOSO_API_KEY")
