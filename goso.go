@@ -40,6 +40,8 @@ var (
 	divPattern   = regexp.MustCompile(`<div.*?>`)
 	bqPattern    = regexp.MustCompile(`<blockquote.*?>`)
 	r            = strings.NewReplacer(
+		"<li><p>", "",
+		"<li><a href", "<a href",
 		"<p>", "",
 		"</p>", "",
 		"<strong>", bold,
