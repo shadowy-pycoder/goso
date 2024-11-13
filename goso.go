@@ -35,6 +35,7 @@ const (
 var (
 	codeStartIdx int
 	codeEndIdx   int
+	// https://meta.stackexchange.com/questions/1777/what-html-tags-are-allowed-on-stack-exchange-sites
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
 	aHrefPattern = regexp.MustCompile(`(?s)<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
 	divPattern   = regexp.MustCompile(`<div.*?>`)
@@ -48,6 +49,8 @@ var (
 		"</strong>", reset,
 		"<em>", italic,
 		"</em>", reset,
+		"<i>", italic,
+		"</i>", reset,
 		"<ul>", "",
 		"</ul>", "",
 		"<ol>", "",
@@ -67,13 +70,15 @@ var (
 		"</h4>", reset,
 		"<h5>", bold,
 		"</h5>", reset,
+		"<h6>", bold,
+		"</h6>", reset,
 		"<br>", "\n",
 		"<blockquote>", italic,
 		"</blockquote>", reset,
 		"<del>", strikethrough,
 		"</del>", reset,
-		"<ins>", "",
-		"</ins>", "",
+		"<s>", strikethrough,
+		"</s>", reset,
 		"</div>", "",
 		"<code>", green,
 		"</code>", reset,
@@ -83,6 +88,12 @@ var (
 		"</sup>", "",
 		"<sub>", "",
 		"</sub>", "",
+		"<dl>", "",
+		"</dl>", "",
+		"<dt>", "",
+		"</dt>", "",
+		"<dd>", " - ",
+		"</dd>", "",
 	)
 )
 
