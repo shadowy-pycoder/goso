@@ -33,8 +33,6 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    - name: Run golint
-      run: golint ./...
     - name: Run gofmt
       run: gofmt -d ./
     - name: Run go vet
