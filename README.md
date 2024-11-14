@@ -69,4 +69,5 @@ goso  -l go -s onedark -q 1 -a 1 Sort maps in Golang
 ```
 Output:
 
-![Screenshot from 2024-11-12 13-11-23](https://github.com/user-attachments/assets/986fb3bb-709a-411b-891f-977bb8cbe70f)
+![Screenshot from 2024-11-14 10-16-52](https://github.com/user-attachments/assets/43282839-1719-44ae-a0e8-c2ed44d8e9e6)
+
