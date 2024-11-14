@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func openFile(path string) (*os.File, func(), error) {
@@ -37,12 +38,17 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 	results := make(map[int]*Result)
 	questions := make([]string, 0, len(gr.Items))
 	for _, item := range gr.Items {
-		question := item.Pagemap.Question[0]
-		answerCount, _ := strconv.Atoi(question.Answercount)
-		if answerCount == 0 {
-			continue
+		var upvoteCount int
+		var dateCreated time.Time
+		if len(item.Pagemap.Question) > 0 {
+			question := item.Pagemap.Question[0]
+			answerCount, _ := strconv.Atoi(question.Answercount)
+			if answerCount == 0 {
+				continue
+			}
+			upvoteCount, _ = strconv.Atoi(question.Upvotecount)
+			dateCreated, _ = time.Parse("2006-01-02T15:04:05", question.Datecreated)
 		}
-		upvoteCount, _ := strconv.Atoi(question.Upvotecount)
 		u, _ := netUrl.Parse(item.Link)
 		questionStr := strings.Split(u.Path, "/")[2]
 		questions = append(questions, questionStr)
@@ -52,6 +58,7 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			Link:        item.Link,
 			QuestionId:  questionId,
 			UpvoteCount: upvoteCount,
+			Date:        dateCreated,
 		}
 	}
 	_ = strings.Join(questions, ";")
@@ -73,9 +80,12 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 		}
 		result.Answers = append(result.Answers,
 			&Answer{
-				Score: item.Score,
-				Body:  item.Body,
-				Link:  fmt.Sprintf("https://stackoverflow.com/a/%d", item.AnswerID),
+				Author:     item.Owner.DisplayName,
+				Score:      item.Score,
+				Body:       item.Body,
+				Link:       fmt.Sprintf("https://stackoverflow.com/a/%d", item.AnswerID),
+				IsAccepted: item.IsAccepted,
+				Date:       time.Unix(int64(item.CreationDate), 0).UTC(),
 			})
 	}
 	return results, nil

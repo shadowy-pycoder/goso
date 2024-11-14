@@ -17,6 +17,7 @@ import (
 	"github.com/alecthomas/chroma/v2/formatters"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
+	"golang.org/x/term"
 )
 
 const (
@@ -38,8 +39,9 @@ const (
 )
 
 var (
-	codeStartIdx int
-	codeEndIdx   int
+	codeStartIdx  int
+	codeEndIdx    int
+	terminalWidth int
 	// https://meta.stackexchange.com/questions/1777/what-html-tags-are-allowed-on-stack-exchange-sites
 	codePattern  = regexp.MustCompile(`<pre\s.*?>`)
 	aHrefPattern = regexp.MustCompile(`(?s)<a\s+(?:[^>]*?\s+)?href=(["'])?([^\'" >]+)(.*?)?</a>`)
@@ -62,7 +64,7 @@ var (
 		"</ol>", "",
 		"<li>", " - ",
 		"</li>", "",
-		"<hr>", "────────────────────────────────────────────────────────────────────────────────",
+
 		"<b>", bold,
 		"</b>", reset,
 		"<h1>", bold,
@@ -251,7 +253,7 @@ type Answer struct {
 }
 
 func (a *Answer) String() string {
-	line := strings.Repeat("─", 80)
+	line := strings.Repeat("─", terminalWidth)
 	color := yellow
 	if a.IsAccepted {
 		color = green
@@ -264,6 +266,7 @@ func (a *Answer) String() string {
 %sDate: %s
 Link: %s%s
 %s
+
 `,
 		line,
 		color, a.Score, reset, answerColor, bold, a.Author, reset,
@@ -282,7 +285,7 @@ type Result struct {
 }
 
 func (r *Result) String() string {
-	line := strings.Repeat("─", 80)
+	line := strings.Repeat("─", terminalWidth)
 	color := yellow
 	if r.UpvoteCount < 0 {
 		color = downvoted
@@ -307,6 +310,7 @@ func prepareText(text string) string {
 
 func fmtText(text string) string {
 	t := r.Replace(html.UnescapeString(text))
+	t = strings.ReplaceAll(t, "<hr>", strings.Repeat("─", terminalWidth))
 	t = divPattern.ReplaceAllString(t, "")
 	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
 	t = bqPattern.ReplaceAllString(t, italic)
@@ -406,6 +410,12 @@ func GetAnswers(conf *Config,
 	fetchResults func(*Config) (*GoogleSearchResult, error),
 	fetchAnswers func(*Config, *GoogleSearchResult) (map[int]*Result, error),
 ) (string, error) {
+	var err error
+	terminalWidth, _, err = term.GetSize(0)
+	if err != nil {
+		return "", err
+	}
+	terminalWidth = min(terminalWidth, 80)
 	var answers strings.Builder
 	style := styles.Get(conf.Style)
 	if style == nil {
