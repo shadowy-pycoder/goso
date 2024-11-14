@@ -103,6 +103,8 @@ var (
 		"</dt>", "",
 		"<dd>", " - ",
 		"</dd>", "",
+		"<kbd>", bold,
+		"</kbd>", reset,
 	)
 )
 
@@ -263,15 +265,15 @@ func (a *Answer) String() string {
 	return fmt.Sprintf(`
 %s
 %s[%d]%s %sAnswer from %s%s%s
-%sDate: %s
-Link: %s%s
+%sDate: %s%s
+%sLink: %s%s
 %s
 
 `,
 		line,
 		color, a.Score, reset, answerColor, bold, a.Author, reset,
-		lightgray, a.Date.Format(time.RFC822),
-		a.Link, reset,
+		lightgray, a.Date.Format(time.RFC822), reset,
+		lightgray, a.Link, reset,
 		line)
 }
 
@@ -294,13 +296,13 @@ func (r *Result) String() string {
 	return fmt.Sprintf(`
 %s
 %s[%d]%s %s%s%s%s
-%sDate: %s
-Link: %s%s
+%sDate: %s%s
+%sLink: %s%s
 %s`,
 		line,
 		color, r.UpvoteCount, reset, bold, questionColor, r.Title, reset,
-		lightgray, r.Date.Format(time.RFC822),
-		r.Link, reset,
+		lightgray, r.Date.Format(time.RFC822), reset,
+		lightgray, r.Link, reset,
 		line)
 }
 
