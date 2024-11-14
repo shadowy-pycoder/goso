@@ -13,7 +13,11 @@ import (
 	"github.com/shadowy-pycoder/goso"
 )
 
-const app string = "goso"
+const (
+	app                  string = "goso"
+	questionCountDefault int    = 10
+	answerCountDefault   int    = 3
+)
 
 const usagePrefix string = `                                                                  
  .d88b.   .d88b.  .d8888b   .d88b.  
@@ -56,7 +60,7 @@ func root(args []string) error {
 	}
 	q, set := os.LookupEnv("GOSO_QUESTIONS")
 	if !set {
-		qn = 1
+		qn = questionCountDefault
 	} else {
 		qn, err = strconv.Atoi(q)
 		if err != nil {
@@ -68,7 +72,7 @@ func root(args []string) error {
 	}
 	a, set := os.LookupEnv("GOSO_ANSWERS")
 	if !set {
-		an = 1
+		an = answerCountDefault
 	} else {
 		an, err = strconv.Atoi(a)
 		if err != nil {

@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/chroma/v2/formatters"
 	"github.com/alecthomas/chroma/v2/lexers"
@@ -30,6 +31,10 @@ const (
 	green         string = "\033[32m"
 	yellow        string = "\033[33m"
 	magenta       string = "\033[35m"
+	questionColor string = "\033[38;5;204m"
+	answerColor   string = "\033[38;5;255m"
+	downvoted     string = "\033[38;5;160m"
+	lightgray     string = "\033[38;5;248m"
 )
 
 var (
@@ -83,7 +88,9 @@ var (
 		"<code>", green,
 		"</code>", reset,
 		"<br />", "",
+		"<br/>", "",
 		"<hr />", "",
+		"<hr/>", "",
 		"<sup>", "",
 		"</sup>", "",
 		"<sub>", "",
@@ -235,18 +242,34 @@ type Config struct {
 	Client       *http.Client
 }
 type Answer struct {
-	Score int
-	Body  string
-	Link  string
+	Author     string
+	Score      int
+	Body       string
+	Link       string
+	IsAccepted bool
+	Date       time.Time
 }
 
 func (a *Answer) String() string {
 	line := strings.Repeat("─", 80)
+	color := yellow
+	if a.IsAccepted {
+		color = green
+	} else if a.Score < 0 {
+		color = downvoted
+	}
 	return fmt.Sprintf(`
 %s
-%s[%d]%s %s
+%s[%d]%s %sAnswer from %s%s%s
+%sDate: %s
+Link: %s%s
 %s
-`, line, yellow, a.Score, reset, a.Link, line)
+`,
+		line,
+		color, a.Score, reset, answerColor, bold, a.Author, reset,
+		lightgray, a.Date.Format(time.RFC822),
+		a.Link, reset,
+		line)
 }
 
 type Result struct {
@@ -254,16 +277,28 @@ type Result struct {
 	Link        string
 	QuestionId  int
 	UpvoteCount int
+	Date        time.Time
 	Answers     []*Answer
 }
 
 func (r *Result) String() string {
 	line := strings.Repeat("─", 80)
+	color := yellow
+	if r.UpvoteCount < 0 {
+		color = downvoted
+	}
+
 	return fmt.Sprintf(`
 %s
-%s[%d]%s %s
-%s
-%s`, line, yellow, r.UpvoteCount, reset, r.Title, r.Link, line)
+%s[%d]%s %s%s%s%s
+%sDate: %s
+Link: %s%s
+%s`,
+		line,
+		color, r.UpvoteCount, reset, bold, questionColor, r.Title, reset,
+		lightgray, r.Date.Format(time.RFC822),
+		r.Link, reset,
+		line)
 }
 
 func prepareText(text string) string {
@@ -307,6 +342,7 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 	questions := make([]string, 0, len(gr.Items))
 	for _, item := range gr.Items {
 		var upvoteCount int
+		var dateCreated time.Time
 		if len(item.Pagemap.Question) > 0 {
 			question := item.Pagemap.Question[0]
 			answerCount, _ := strconv.Atoi(question.Answercount)
@@ -314,6 +350,7 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 				continue
 			}
 			upvoteCount, _ = strconv.Atoi(question.Upvotecount)
+			dateCreated, _ = time.Parse("2006-01-02T15:04:05", question.Datecreated)
 		}
 		u, _ := netUrl.Parse(item.Link)
 		questionStr := strings.Split(u.Path, "/")[2]
@@ -324,6 +361,7 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			Link:        item.Link,
 			QuestionId:  questionId,
 			UpvoteCount: upvoteCount,
+			Date:        dateCreated,
 		}
 	}
 	question_ids := strings.Join(questions, ";")
@@ -353,9 +391,12 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 		}
 		result.Answers = append(result.Answers,
 			&Answer{
-				Score: item.Score,
-				Body:  item.Body,
-				Link:  fmt.Sprintf("https://stackoverflow.com/a/%d", item.AnswerID),
+				Author:     item.Owner.DisplayName,
+				Score:      item.Score,
+				Body:       item.Body,
+				Link:       fmt.Sprintf("https://stackoverflow.com/a/%d", item.AnswerID),
+				IsAccepted: item.IsAccepted,
+				Date:       time.Unix(int64(item.CreationDate), 0).UTC(),
 			})
 	}
 	return results, nil
