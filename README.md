@@ -6,6 +6,11 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/shadowy-pycoder/goso.svg)](https://pkg.go.dev/github.com/shadowy-pycoder/goso)
 
 
+## Demo
+
+![goso - Animated gif demo](demo/demo.gif)
+
+
 
 ## Installation
 

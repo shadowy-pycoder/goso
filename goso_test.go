@@ -106,3 +106,17 @@ func BenchmarkGetAnswers(b *testing.B) {
 		}
 	}
 }
+
+func TestOutput(t *testing.T) {
+	conf := &Config{
+		Style:       "onedark",
+		Lexer:       "c",
+		QuestionNum: 10,
+		AnswerNum:   10,
+	}
+	answers, err := GetAnswers(conf, fetchGoogle, fetchStackOverflow)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(answers)
+}

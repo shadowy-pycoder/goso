@@ -21,21 +21,22 @@ import (
 )
 
 const (
-	codeStartTag  string = "<pre><code>"
-	codeEndTag    string = "</code></pre>"
-	reset         string = "\033[0m"
-	bold          string = "\033[1m"
-	italic        string = "\033[3m"
-	strikethrough string = "\033[9m"
-	gray          string = "\033[37m"
-	blue          string = "\033[36m"
-	green         string = "\033[32m"
-	yellow        string = "\033[33m"
-	magenta       string = "\033[35m"
-	questionColor string = "\033[38;5;204m"
-	answerColor   string = "\033[38;5;255m"
-	downvoted     string = "\033[38;5;160m"
-	lightgray     string = "\033[38;5;248m"
+	codeStartTag     string = "<pre><code>"
+	codeEndTag       string = "</code></pre>"
+	reset            string = "\033[0m"
+	bold             string = "\033[1m"
+	italic           string = "\033[3m"
+	strikethrough    string = "\033[9m"
+	gray             string = "\033[37m"
+	blue             string = "\033[36m"
+	green            string = "\033[32m"
+	yellow           string = "\033[33m"
+	magenta          string = "\033[35m"
+	questionColor    string = "\033[38;5;204m"
+	answerColor      string = "\033[38;5;255m"
+	downvoted        string = "\033[38;5;160m"
+	lightgray        string = "\033[38;5;248m"
+	terminalMaxWidth int    = 80
 )
 
 var (
@@ -64,7 +65,6 @@ var (
 		"</ol>", "",
 		"<li>", " - ",
 		"</li>", "",
-
 		"<b>", bold,
 		"</b>", reset,
 		"<h1>", bold,
@@ -411,11 +411,15 @@ func GetAnswers(conf *Config,
 	fetchAnswers func(*Config, *GoogleSearchResult) (map[int]*Result, error),
 ) (string, error) {
 	var err error
-	terminalWidth, _, err = term.GetSize(0)
-	if err != nil {
-		return "", err
+	if term.IsTerminal(0) {
+		terminalWidth, _, err = term.GetSize(0)
+		if err != nil {
+			return "", err
+		}
+		terminalWidth = min(terminalWidth, terminalMaxWidth)
+	} else {
+		terminalWidth = terminalMaxWidth
 	}
-	terminalWidth = min(terminalWidth, 80)
 	var answers strings.Builder
 	style := styles.Get(conf.Style)
 	if style == nil {

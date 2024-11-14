@@ -8,10 +8,10 @@ build:
 	CGO_ENABLED=0 go build -ldflags "-s -w" -trimpath -o ./bin/${APP_NAME} ./cmd/${APP_NAME}/*.go
 
 
-${TEST_FILE}:
-	go test -c -race
-
 .PHONY: bench
-bench: ${TEST_FILE}
-	./$< -test.bench=. -test.benchmem -test.run=^$$ -test.benchtime 100x \
-	-test.cpuprofile='cpu.prof' -test.memprofile='mem.prof'
+bench: 
+	go test -bench=. -benchmem -run=^$$ -benchtime 100x -cpuprofile='cpu.prof' -memprofile='mem.prof'
+
+.PHONY: demo
+demo:
+	go test . -v -run=TestOutput -count=1 
