@@ -78,3 +78,9 @@ Output:
 
 ![Screenshot from 2024-11-14 10-16-52](https://github.com/user-attachments/assets/43282839-1719-44ae-a0e8-c2ed44d8e9e6)
 
+You can also use `less` command for instance to page through the results:
+```shell  
+#!/bin/bash
+goso "$@" | less -F -R -X
+```
+

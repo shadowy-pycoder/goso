@@ -36,6 +36,7 @@ const (
 	answerColor      string = "\033[38;5;255m"
 	downvoted        string = "\033[38;5;160m"
 	lightgray        string = "\033[38;5;248m"
+	urlColor         string = "\033[38;5;248m"
 	terminalMaxWidth int    = 80
 )
 
@@ -314,7 +315,7 @@ func fmtText(text string) string {
 	t := r.Replace(html.UnescapeString(text))
 	t = strings.ReplaceAll(t, "<hr>", strings.Repeat("─", terminalWidth))
 	t = divPattern.ReplaceAllString(t, "")
-	t = aHrefPattern.ReplaceAllString(t, "\n - $2")
+	t = aHrefPattern.ReplaceAllString(t, fmt.Sprintf("\n %s- $2%s", urlColor, reset))
 	t = bqPattern.ReplaceAllString(t, italic)
 	return t
 }
