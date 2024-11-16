@@ -64,10 +64,10 @@ func root(args []string) error {
 	} else {
 		qn, err = strconv.Atoi(q)
 		if err != nil {
-			return fmt.Errorf("-q should be within [min=1, max=10], please check your env")
+			return fmt.Errorf("-q should be within [min=1, max=10], please check if `GOSO_QUESTIONS` is set correctly")
 		}
 		if qn < 1 || qn > 10 {
-			return fmt.Errorf("-q should be within [min=1, max=10], please check your env")
+			return fmt.Errorf("-q should be within [min=1, max=10], please check if `GOSO_QUESTIONS` is set correctly")
 		}
 	}
 	a, set := os.LookupEnv("GOSO_ANSWERS")
@@ -76,10 +76,10 @@ func root(args []string) error {
 	} else {
 		an, err = strconv.Atoi(a)
 		if err != nil {
-			return fmt.Errorf("-a should be within [min=1, max=10], please check your env")
+			return fmt.Errorf("-a should be within [min=1, max=10], please check if `GOSO_ANSWERS` is set correctly")
 		}
 		if an < 1 || an > 10 {
-			return fmt.Errorf("-a should be within [min=1, max=10], please check your env")
+			return fmt.Errorf("-a should be within [min=1, max=10], please check if `GOSO_ANSWERS` is set correctly")
 		}
 	}
 	flags := flag.NewFlagSet(app, flag.ExitOnError)
