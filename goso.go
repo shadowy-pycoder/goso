@@ -329,7 +329,7 @@ func FetchGoogle(conf *Config) (*GoogleSearchResult, error) {
 	}
 	res, err := conf.Client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed connecting to Google API: check you internet connection")
+		return nil, fmt.Errorf("failed connecting to Google API: check your internet connection")
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
@@ -371,9 +371,8 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			Date:        dateCreated,
 		}
 	}
-	question_ids := strings.Join(questions, ";")
 	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
-		netUrl.QueryEscape(question_ids))
+		netUrl.QueryEscape(strings.Join(questions, ";")))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
