@@ -16,10 +16,16 @@
 
 ## Installation
 
+You can download the binary for your platform from [Releases](https://github.com/shadowy-pycoder/goso/releases) page.
+
+Alternatively, you can install it using `go install` command (requires Go [1.23](https://go.dev/doc/install) or later):
+
 ```shell
 CGO_ENABLED=0 go install -ldflags "-s -w" -trimpath github.com/shadowy-pycoder/goso/cmd/goso@latest
 ```
 This will install the `goso` binary to your `$GOPATH/bin` directory.
+
+
 
 This tool uses [Custom Search JSON API](https://developers.google.com/custom-search/v1/overview) from Google to obtain most relevant results from Stack Overflow. So, to make it work, you need to obtain an API key from Google and also a [Search Engine ID](https://developers.google.com/custom-search/v1/overview#search_engine_id).
 
