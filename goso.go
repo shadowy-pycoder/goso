@@ -320,34 +320,27 @@ func fmtText(text string) string {
 	return t
 }
 
-func FetchGoogle(conf *Config) (*GoogleSearchResult, error) {
+func FetchGoogle(conf *Config, results map[int]*Result) error {
 	url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s",
 		conf.ApiKey, conf.SearchEngine, netUrl.QueryEscape(conf.Query))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	res, err := conf.Client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed connecting to Google API: check your internet connection")
+		return fmt.Errorf("failed connecting to Google API: check your internet connection")
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
-		return nil, fmt.Errorf("failed connecting to Google API: %s", res.Status)
+		return fmt.Errorf("failed connecting to Google API: %s", res.Status)
 	}
 	var gsResp GoogleSearchResult
 	err = json.NewDecoder(res.Body).Decode(&gsResp)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &gsResp, nil
-}
-
-func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, error) {
-
-	results := make(map[int]*Result)
-	questions := make([]string, 0, len(gr.Items))
-	for _, item := range gr.Items {
+	for _, item := range gsResp.Items {
 		var upvoteCount int
 		var dateCreated time.Time
 		if len(item.Pagemap.Question) > 0 {
@@ -360,9 +353,7 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			dateCreated, _ = time.Parse("2006-01-02T15:04:05", question.Datecreated)
 		}
 		u, _ := netUrl.Parse(item.Link)
-		questionStr := strings.Split(u.Path, "/")[2]
-		questions = append(questions, questionStr)
-		questionId, _ := strconv.Atoi(questionStr)
+		questionId, _ := strconv.Atoi(strings.Split(u.Path, "/")[2])
 		results[questionId] = &Result{
 			Title:       item.Title,
 			Link:        item.Link,
@@ -371,24 +362,34 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			Date:        dateCreated,
 		}
 	}
+	return nil
+}
+
+func FetchStackOverflow(conf *Config, results map[int]*Result) error {
+	questions := make([]string, len(results))
+	var idx int
+	for question := range maps.Keys(results) {
+		questions[idx] = strconv.Itoa(question)
+		idx++
+	}
 	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
 		netUrl.QueryEscape(strings.Join(questions, ";")))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	res, err := conf.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer res.Body.Close()
 	if res.StatusCode > 299 {
-		return nil, fmt.Errorf("failed connecting to Stack Overflow API: %s", res.Status)
+		return fmt.Errorf("failed connecting to Stack Overflow API: %s", res.Status)
 	}
 	var soResp StackOverflowResult
 	err = json.NewDecoder(res.Body).Decode(&soResp)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	for _, item := range soResp.Items {
 		result, ok := results[item.QuestionID]
@@ -405,12 +406,12 @@ func FetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 				Date:       time.Unix(int64(item.CreationDate), 0).UTC(),
 			})
 	}
-	return results, nil
+	return nil
 }
 
 func GetAnswers(conf *Config,
-	fetchResults func(*Config) (*GoogleSearchResult, error),
-	fetchAnswers func(*Config, *GoogleSearchResult) (map[int]*Result, error),
+	fetchResults func(*Config, map[int]*Result) error,
+	fetchAnswers func(*Config, map[int]*Result) error,
 ) (string, error) {
 	var err error
 	if term.IsTerminal(0) {
@@ -435,11 +436,12 @@ func GetAnswers(conf *Config,
 	if lexer == nil {
 		lexer = lexers.Fallback
 	}
-	gsResp, err := fetchResults(conf)
+	results := make(map[int]*Result)
+	err = fetchResults(conf, results)
 	if err != nil {
 		return "", err
 	}
-	results, err := fetchAnswers(conf, gsResp)
+	err = fetchAnswers(conf, results)
 	if err != nil {
 		return "", err
 	}

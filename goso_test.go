@@ -3,6 +3,7 @@ package goso
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	netUrl "net/url"
 	"os"
 	"path/filepath"
@@ -19,25 +20,19 @@ func openFile(path string) (*os.File, func(), error) {
 	}
 	return f, func() { f.Close() }, nil
 }
-func fetchGoogle(conf *Config) (*GoogleSearchResult, error) {
+
+func fetchGoogle(conf *Config, results map[int]*Result) error {
 	var gsResp GoogleSearchResult
 	f, close, err := openFile("goso")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer close()
 	err = json.NewDecoder(f).Decode(&gsResp)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &gsResp, nil
-}
-
-func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, error) {
-
-	results := make(map[int]*Result)
-	questions := make([]string, 0, len(gr.Items))
-	for _, item := range gr.Items {
+	for _, item := range gsResp.Items {
 		var upvoteCount int
 		var dateCreated time.Time
 		if len(item.Pagemap.Question) > 0 {
@@ -50,9 +45,7 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			dateCreated, _ = time.Parse("2006-01-02T15:04:05", question.Datecreated)
 		}
 		u, _ := netUrl.Parse(item.Link)
-		questionStr := strings.Split(u.Path, "/")[2]
-		questions = append(questions, questionStr)
-		questionId, _ := strconv.Atoi(questionStr)
+		questionId, _ := strconv.Atoi(strings.Split(u.Path, "/")[2])
 		results[questionId] = &Result{
 			Title:       item.Title,
 			Link:        item.Link,
@@ -61,17 +54,27 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 			Date:        dateCreated,
 		}
 	}
+	return nil
+}
+
+func fetchStackOverflow(conf *Config, results map[int]*Result) error {
+	questions := make([]string, len(results))
+	var idx int
+	for question := range maps.Keys(results) {
+		questions[idx] = strconv.Itoa(question)
+		idx++
+	}
 	_ = strings.Join(questions, ";")
 	var soResp StackOverflowResult
 	f, close, err := openFile("answers")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer close()
 
 	err = json.NewDecoder(f).Decode(&soResp)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	for _, item := range soResp.Items {
 		result, ok := results[item.QuestionID]
@@ -88,7 +91,7 @@ func fetchStackOverflow(conf *Config, gr *GoogleSearchResult) (map[int]*Result, 
 				Date:       time.Unix(int64(item.CreationDate), 0).UTC(),
 			})
 	}
-	return results, nil
+	return nil
 }
 
 func BenchmarkGetAnswers(b *testing.B) {
