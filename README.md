@@ -45,7 +45,7 @@ source $HOME/.profile
 ###  OpenSerp API
 `goso` also supports [OpenSERP (Search Engine Results Page)](https://github.com/karust/openserp) from [Karust](https://github.com/karust). This is a completely *FREE* alternative to the Google Search JSON API, though it works a little bit slower, but gives basically the same results. 
 
-So, to make it work, you need tu run OperSERP server locally. You can do it like this:
+So, to make it work, you need to run OperSERP server locally. You can do it like this:
 
 With Docker:
 ```shell
