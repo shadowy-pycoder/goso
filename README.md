@@ -26,8 +26,10 @@ CGO_ENABLED=0 go install -ldflags "-s -w" -trimpath github.com/shadowy-pycoder/g
 This will install the `goso` binary to your `$GOPATH/bin` directory.
 
 
+## Search Engine Setup
 
-This tool uses [Custom Search JSON API](https://developers.google.com/custom-search/v1/overview) from Google to obtain most relevant results from Stack Overflow. So, to make it work, you need to obtain an API key from Google and also a [Search Engine ID](https://developers.google.com/custom-search/v1/overview#search_engine_id).
+###  Google Search JSON API
+This approach employs [Custom Search JSON API](https://developers.google.com/custom-search/v1/overview) from Google to obtain most relevant results from Stack Overflow. So, to make it work, you need to get an API key from Google and also a [Search Engine ID](https://developers.google.com/custom-search/v1/overview#search_engine_id). That gives you `100 requests per day`, which I believe is enough for most use cases.
 
 Setup your `Search Engine ID` like this:
 
@@ -39,6 +41,33 @@ echo "export GOSO_API_KEY=<YOUR_API_KEY>" >> $HOME/.profile
 echo "export GOSO_SE=<YOUR_SEARCH_ENGINE_ID>" >> $HOME/.profile
 source $HOME/.profile
 ```
+
+###  OpenSerp API
+`goso` also supports [OpenSERP (Search Engine Results Page)](https://github.com/karust/openserp) from [Karust](https://github.com/karust). This is a completely *FREE* alternative to the Google Search JSON API, though it works a little bit slower, but gives basically the same results. 
+
+So, to make it work, you need tu run OperSERP server locally. You can do it like this:
+
+With Docker:
+```shell
+docker run -p 127.0.0.1:7000:7000 -it karust/openserp serve -a 0.0.0.0 -p 7000
+```
+
+Or as a CLI command:
+
+```shell
+openserp serve 
+```
+You can learn more on how to install OpenSERP [here](https://github.com/karust/openserp).
+
+Once you have it running, add variables to your environment:
+```shell
+echo "export GOSO_OS_HOST=127.0.0.1" >> $HOME/.profile
+echo "export GOSO_OS_PORT=7000" >> $HOME/.profile
+source $HOME/.profile
+```
+These variables will have priority over the `GOSO_API_KEY` and `GOSO_SE`.
+
+
 ## Usage
 
 ```shell

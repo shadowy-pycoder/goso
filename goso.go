@@ -236,6 +236,14 @@ type StackOverflowResult struct {
 	QuotaRemaining int  `json:"quota_remaining"`
 }
 
+type OpenSerpResult struct {
+	Rank        int    `json:"rank"`
+	URL         string `json:"url"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Ad          bool   `json:"ad"`
+}
+
 type Config struct {
 	ApiKey       string
 	SearchEngine string
@@ -244,6 +252,8 @@ type Config struct {
 	Lexer        string
 	QuestionNum  int
 	AnswerNum    int
+	OpenSerpHost string
+	OpenSerpPort int
 	Client       *http.Client
 }
 type Answer struct {
@@ -360,6 +370,38 @@ func FetchGoogle(conf *Config, results map[int]*Result) error {
 			QuestionId:  questionId,
 			UpvoteCount: upvoteCount,
 			Date:        dateCreated,
+		}
+	}
+	return nil
+}
+
+func FetchOpenSerp(conf *Config, results map[int]*Result) error {
+	url := fmt.Sprintf("http://%s:%d/google/search?lang=EN&limit=%d&text=%s&site=stackoverflow.com",
+		conf.OpenSerpHost, conf.OpenSerpPort, conf.QuestionNum, netUrl.QueryEscape(conf.Query))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+	res, err := conf.Client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed connecting to OpenSerp API: check your internet connection")
+	}
+	defer res.Body.Close()
+	if res.StatusCode > 299 {
+		return fmt.Errorf("failed connecting to OpenSerp API: %s", res.Status)
+	}
+	var osResp []OpenSerpResult
+	err = json.NewDecoder(res.Body).Decode(&osResp)
+	if err != nil {
+		return err
+	}
+	for _, item := range osResp {
+		u, _ := netUrl.Parse(item.URL)
+		questionId, _ := strconv.Atoi(strings.Split(u.Path, "/")[2])
+		results[questionId] = &Result{
+			Title:      item.Title,
+			Link:       item.URL,
+			QuestionId: questionId,
 		}
 	}
 	return nil

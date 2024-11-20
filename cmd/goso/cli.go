@@ -104,21 +104,34 @@ func root(args []string) error {
 		return fmt.Errorf("-a should be within [min=1, max=10]")
 	}
 	conf.AnswerNum = *aNum
-	apiKey, set := os.LookupEnv("GOSO_API_KEY")
-	if !set {
-		return fmt.Errorf("api key is not set")
+	var fetchFunc func(*goso.Config, map[int]*goso.Result) error
+	osHost, hostSet := os.LookupEnv("GOSO_OS_HOST")
+	osPort, portSet := os.LookupEnv("GOSO_OS_PORT")
+	if hostSet && portSet {
+		conf.OpenSerpHost = osHost
+		conf.OpenSerpPort, err = strconv.Atoi(osPort)
+		if err != nil {
+			return fmt.Errorf("failed parsing `GOSO_OS_PORT`")
+		}
+		fetchFunc = goso.FetchOpenSerp
+	} else {
+		apiKey, set := os.LookupEnv("GOSO_API_KEY")
+		if !set {
+			return fmt.Errorf("`GOSO_API_KEY` is not set")
+		}
+		conf.ApiKey = apiKey
+		se, set := os.LookupEnv("GOSO_SE")
+		if !set {
+			return fmt.Errorf("`GOSO_SE` is not set")
+		}
+		conf.SearchEngine = se
+		fetchFunc = goso.FetchGoogle
 	}
-	conf.ApiKey = apiKey
-	se, set := os.LookupEnv("GOSO_SE")
-	if !set {
-		return fmt.Errorf("search engine is not set")
-	}
-	conf.SearchEngine = se
 	conf.Query = strings.Join(flags.Args(), " ")
 	if conf.Query == "" {
 		return fmt.Errorf("query is empty")
 	}
-	answers, err := goso.GetAnswers(conf, goso.FetchGoogle, goso.FetchStackOverflow)
+	answers, err := goso.GetAnswers(conf, fetchFunc, goso.FetchStackOverflow)
 	if err != nil {
 		return err
 	}
