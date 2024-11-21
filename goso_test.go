@@ -83,6 +83,7 @@ func fetchStackOverflow(conf *Config, results map[int]*Result) error {
 		}
 		result.Answers = append(result.Answers,
 			&Answer{
+				Title:      result.Title,
 				Author:     item.Owner.DisplayName,
 				Score:      item.Score,
 				Body:       item.Body,

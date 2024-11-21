@@ -257,6 +257,7 @@ type Config struct {
 	Client       *http.Client
 }
 type Answer struct {
+	Title      string
 	Author     string
 	Score      int
 	Body       string
@@ -275,14 +276,16 @@ func (a *Answer) String() string {
 	}
 	return fmt.Sprintf(`
 %s
-%s[%d]%s %sAnswer from %s%s%s
+%s[%d]%s %s[Answer] %s%s
+%sAuthor: %s%s
 %sDate: %s%s
 %sLink: %s%s
 %s
 
 `,
 		line,
-		color, a.Score, reset, answerColor, bold, a.Author, reset,
+		color, a.Score, reset, answerColor, a.Title, reset,
+		lightgray, a.Author, reset,
 		lightgray, a.Date.Format(time.RFC822), reset,
 		lightgray, a.Link, reset,
 		line)
@@ -306,7 +309,7 @@ func (r *Result) String() string {
 
 	return fmt.Sprintf(`
 %s
-%s[%d]%s %s%s%s%s
+%s[%d]%s %s%s[Question] %s%s
 %sDate: %s%s
 %sLink: %s%s
 %s`,
@@ -440,6 +443,7 @@ func FetchStackOverflow(conf *Config, results map[int]*Result) error {
 		}
 		result.Answers = append(result.Answers,
 			&Answer{
+				Title:      result.Title,
 				Author:     item.Owner.DisplayName,
 				Score:      item.Score,
 				Body:       item.Body,
