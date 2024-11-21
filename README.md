@@ -25,6 +25,14 @@ CGO_ENABLED=0 go install -ldflags "-s -w" -trimpath github.com/shadowy-pycoder/g
 ```
 This will install the `goso` binary to your `$GOPATH/bin` directory.
 
+If none of the above works for you, you can use the [Makefile](https://github.com/shadowy-pycoder/goso/blob/master/Makefile) to build the binary from source.
+
+```shell
+git clone https://github.com/shadowy-pycoder/goso.git
+cd goso
+make build
+```
+
 
 ## Search Engine Setup
 
