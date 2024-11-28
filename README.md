@@ -127,3 +127,14 @@ You can also use `less` command for instance to page through the results:
 goso "$@" | less -F -R -X
 ```
 
+## Contributing
+
+Are you a developer?
+
+- Fork the repository
+- Create your feature branch: `git switch -c my-new-feature`
+- Commit your changes: `git commit -am 'Add some feature'`
+- Push to the branch: `git push origin my-new-feature`
+- Submit a pull request
+
+
