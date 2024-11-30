@@ -1,10 +1,11 @@
 # goso - [Stack Overflow](https://stackoverflow.com/) CLI Tool written in Go
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/shadowy-pycoder/goso/go.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/shadowy-pycoder/goso)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Go Reference](https://pkg.go.dev/badge/github.com/shadowy-pycoder/goso.svg)](https://pkg.go.dev/github.com/shadowy-pycoder/goso)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/shadowy-pycoder/goso)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shadowy-pycoder/goso)](https://goreportcard.com/report/github.com/shadowy-pycoder/goso)
+![GitHub Release](https://img.shields.io/github/v/release/shadowy-pycoder/goso)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/shadowy-pycoder/goso/total)
 
 
