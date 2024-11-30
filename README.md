@@ -8,6 +8,14 @@
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/shadowy-pycoder/goso/total)
 
 
+## Features
+
+- Syntax highlighting 
+- Fast search
+- Easy to use
+- Support for Linux, Windows, macOS
+
+
 ## Demo
 
 ![goso - Animated gif demo](demo/demo.gif)
@@ -94,13 +102,14 @@ Usage: goso [OPTIONS] QUERY
 Options:
   -h    Show this help message and exit.
   -a int
-        The maximum number of answers for each result [min=1, max=10] (default 1)
+        The number of answers for each result [min=1, max=10] (default 3)
   -l string
         The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded (default "bash")
   -q int
-        The number of results [min=1, max=10] (default 1)
+        The number of questions [min=1, max=10] (default 10)
   -s string
         The name of Chroma style. See https://xyproto.github.io/splash/docs/ (default "onedark")
+  -v    print version
 ``` 
 
 It is possible to adjust default values for the number of questions and answers, lexer and style.

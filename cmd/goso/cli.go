@@ -87,6 +87,11 @@ func root(args []string) error {
 	flags.StringVar(&conf.Style, "s", style, "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
 	qNum := flags.Int("q", qn, "The number of questions [min=1, max=10]")
 	aNum := flags.Int("a", an, "The number of answers for each result [min=1, max=10]")
+	flags.BoolFunc("v", "print version", func(flagValue string) error {
+		fmt.Println(app, goso.Version)
+		os.Exit(0)
+		return nil
+	})
 
 	flags.Usage = func() {
 		fmt.Print(usagePrefix)
