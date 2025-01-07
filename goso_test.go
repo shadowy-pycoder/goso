@@ -76,11 +76,28 @@ func fetchStackOverflow(conf *Config, results map[int]*Result) error {
 	if err != nil {
 		return err
 	}
+	soQuestions := make(map[int]string)
+	if conf.ShowQuestion {
+		f, close, err := openFile("questions")
+		if err != nil {
+			return err
+		}
+		defer close()
+		var soQuestionsResp StackOverflowQuestion
+		err = json.NewDecoder(f).Decode(&soQuestionsResp)
+		if err != nil {
+			return err
+		}
+		for _, q := range soQuestionsResp.Items {
+			soQuestions[q.QuestionID] = q.Body
+		}
+	}
 	for _, item := range soResp.Items {
 		result, ok := results[item.QuestionID]
 		if !ok {
 			continue
 		}
+		result.Body = soQuestions[item.QuestionID]
 		result.Answers = append(result.Answers,
 			&Answer{
 				Title:      result.Title,
@@ -98,10 +115,11 @@ func fetchStackOverflow(conf *Config, results map[int]*Result) error {
 func BenchmarkGetAnswers(b *testing.B) {
 	b.ResetTimer()
 	conf := &Config{
-		Style:       "onedark",
-		Lexer:       "c",
-		QuestionNum: 10,
-		AnswerNum:   10,
+		Style:        "onedark",
+		Lexer:        "c",
+		QuestionNum:  10,
+		ShowQuestion: true,
+		AnswerNum:    10,
 	}
 	for i := 0; i < b.N; i++ {
 		_, err := GetAnswers(conf, fetchGoogle, fetchStackOverflow)
@@ -113,10 +131,11 @@ func BenchmarkGetAnswers(b *testing.B) {
 
 func TestOutput(t *testing.T) {
 	conf := &Config{
-		Style:       "onedark",
-		Lexer:       "c",
-		QuestionNum: 10,
-		AnswerNum:   10,
+		Style:        "onedark",
+		Lexer:        "c",
+		QuestionNum:  10,
+		ShowQuestion: true,
+		AnswerNum:    10,
 	}
 	answers, err := GetAnswers(conf, fetchGoogle, fetchStackOverflow)
 	if err != nil {

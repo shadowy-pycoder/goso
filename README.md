@@ -122,6 +122,13 @@ echo "export GOSO_QUESTIONS=5" >> $HOME/.profile
 source $HOME/.profile
 ```
 
+By default, `goso` will not show question body, but you can enable it like this:
+```shell
+echo "export GOSO_SHOW_QUESTIONS=1" >> $HOME/.profile
+```
+> [!WARNING]
+> Enabling the question body requires additional call to Stack Overflow API.
+
 ## Example
 
 ```shell

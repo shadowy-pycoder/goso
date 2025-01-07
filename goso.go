@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/alecthomas/chroma/v2"
 	"github.com/alecthomas/chroma/v2/formatters"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
@@ -236,6 +237,37 @@ type StackOverflowResult struct {
 	QuotaRemaining int  `json:"quota_remaining"`
 }
 
+type StackOverflowQuestion struct {
+	Items []struct {
+		Tags  []string `json:"tags"`
+		Owner struct {
+			AccountID    int    `json:"account_id"`
+			Reputation   int    `json:"reputation"`
+			UserID       int    `json:"user_id"`
+			UserType     string `json:"user_type"`
+			ProfileImage string `json:"profile_image"`
+			DisplayName  string `json:"display_name"`
+			Link         string `json:"link"`
+		} `json:"owner"`
+		IsAnswered       bool   `json:"is_answered"`
+		ViewCount        int    `json:"view_count"`
+		ProtectedDate    int    `json:"protected_date"`
+		AnswerCount      int    `json:"answer_count"`
+		Score            int    `json:"score"`
+		LastActivityDate int    `json:"last_activity_date"`
+		CreationDate     int    `json:"creation_date"`
+		LastEditDate     int    `json:"last_edit_date,omitempty"`
+		QuestionID       int    `json:"question_id"`
+		ContentLicense   string `json:"content_license"`
+		Link             string `json:"link"`
+		Title            string `json:"title"`
+		Body             string `json:"body"`
+	} `json:"items"`
+	HasMore        bool `json:"has_more"`
+	QuotaMax       int  `json:"quota_max"`
+	QuotaRemaining int  `json:"quota_remaining"`
+}
+
 type OpenSerpResult struct {
 	Rank        int    `json:"rank"`
 	URL         string `json:"url"`
@@ -251,6 +283,7 @@ type Config struct {
 	Style        string
 	Lexer        string
 	QuestionNum  int
+	ShowQuestion bool
 	AnswerNum    int
 	OpenSerpHost string
 	OpenSerpPort int
@@ -297,6 +330,7 @@ type Result struct {
 	QuestionId  int
 	UpvoteCount int
 	Date        time.Time
+	Body        string
 	Answers     []*Answer
 }
 
@@ -419,6 +453,7 @@ func FetchStackOverflow(conf *Config, results map[int]*Result) error {
 	}
 	url := fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/answers?order=desc&sort=votes&site=stackoverflow&filter=withbody",
 		netUrl.QueryEscape(strings.Join(questions, ";")))
+	//https://api.stackexchange.com/2.2/questions/6827752;48553152/?order=desc&sort=activity&site=stackoverflow&filter=withbody
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
@@ -436,11 +471,37 @@ func FetchStackOverflow(conf *Config, results map[int]*Result) error {
 	if err != nil {
 		return err
 	}
+	soQuestions := make(map[int]string)
+	if conf.ShowQuestion {
+		url = fmt.Sprintf("https://api.stackexchange.com/2.3/questions/%s/?order=desc&sort=activity&site=stackoverflow&filter=withbody",
+			netUrl.QueryEscape(strings.Join(questions, ";")))
+		req, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return err
+		}
+		res, err := conf.Client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer res.Body.Close()
+		if res.StatusCode > 299 {
+			return fmt.Errorf("failed connecting to Stack Overflow API: %s", res.Status)
+		}
+		var soQuestionsResp StackOverflowQuestion
+		err = json.NewDecoder(res.Body).Decode(&soQuestionsResp)
+		if err != nil {
+			return err
+		}
+		for _, q := range soQuestionsResp.Items {
+			soQuestions[q.QuestionID] = q.Body
+		}
+	}
 	for _, item := range soResp.Items {
 		result, ok := results[item.QuestionID]
 		if !ok {
 			continue
 		}
+		result.Body = soQuestions[item.QuestionID]
 		result.Answers = append(result.Answers,
 			&Answer{
 				Title:      result.Title,
@@ -451,6 +512,35 @@ func FetchStackOverflow(conf *Config, results map[int]*Result) error {
 				IsAccepted: item.IsAccepted,
 				Date:       time.Unix(int64(item.CreationDate), 0).UTC(),
 			})
+	}
+	return nil
+}
+
+func highlightText(text string, sb *strings.Builder, formatter chroma.Formatter, lexer chroma.Lexer, style *chroma.Style) error {
+	t := prepareText(text)
+	codeStartIdx = strings.Index(t, codeStartTag)
+	if codeStartIdx == -1 {
+		sb.WriteString(fmtText(t))
+	}
+	for codeStartIdx != -1 {
+		codeEndIdx = strings.Index(t, codeEndTag)
+		if codeEndIdx == -1 {
+			break
+		}
+		sb.WriteString(fmtText(t[:codeStartIdx]))
+		iterator, err := lexer.Tokenise(nil, html.UnescapeString(t[codeStartIdx+len(codeStartTag):codeEndIdx]))
+		if err != nil {
+			return err
+		}
+		err = formatter.Format(sb, style, iterator)
+		if err != nil {
+			return err
+		}
+		t = t[codeEndIdx+len(codeEndTag):]
+		codeStartIdx = strings.Index(t, codeStartTag)
+		if codeStartIdx == -1 {
+			sb.WriteString(fmtText(t))
+		}
 	}
 	return nil
 }
@@ -506,6 +596,15 @@ func GetAnswers(conf *Config,
 			return cmp.Compare(a.Score, b.Score)
 		})
 		answers.WriteString(res.String())
+		if conf.ShowQuestion {
+			var question strings.Builder
+			err = highlightText(res.Body, &question, formatter, lexer, style)
+			if err != nil {
+				return "", err
+			}
+			answers.WriteString("\n\n")
+			answers.WriteString(question.String())
+		}
 		var aIdx int
 		for _, ans := range slices.Backward(res.Answers) {
 			if aIdx >= conf.AnswerNum {
@@ -513,30 +612,9 @@ func GetAnswers(conf *Config,
 			}
 			aIdx++
 			answers.WriteString(ans.String())
-			t := prepareText(ans.Body)
-			codeStartIdx = strings.Index(t, codeStartTag)
-			if codeStartIdx == -1 {
-				answers.WriteString(fmtText(t))
-			}
-			for codeStartIdx != -1 {
-				codeEndIdx = strings.Index(t, codeEndTag)
-				if codeEndIdx == -1 {
-					break
-				}
-				answers.WriteString(fmtText(t[:codeStartIdx]))
-				iterator, err := lexer.Tokenise(nil, html.UnescapeString(t[codeStartIdx+len(codeStartTag):codeEndIdx]))
-				if err != nil {
-					return "", err
-				}
-				err = formatter.Format(&answers, style, iterator)
-				if err != nil {
-					return "", err
-				}
-				t = t[codeEndIdx+len(codeEndTag):]
-				codeStartIdx = strings.Index(t, codeStartTag)
-				if codeStartIdx == -1 {
-					answers.WriteString(fmtText(t))
-				}
+			err = highlightText(ans.Body, &answers, formatter, lexer, style)
+			if err != nil {
+				return "", err
 			}
 		}
 	}

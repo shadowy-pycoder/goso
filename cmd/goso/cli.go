@@ -82,6 +82,20 @@ func root(args []string) error {
 			return fmt.Errorf("-a should be within [min=1, max=10], please check if `GOSO_ANSWERS` is set correctly")
 		}
 	}
+	sq, set := os.LookupEnv("GOSO_SHOW_QUESTIONS")
+	if set {
+		showQuestion, err := strconv.Atoi(sq)
+		if err != nil {
+			return fmt.Errorf("show question should be within [min=0, max=1], please check if `GOSO_SHOW_QUESTIONS` is set correctly")
+		}
+		if showQuestion == 0 {
+			conf.ShowQuestion = false
+		} else if showQuestion == 1 {
+			conf.ShowQuestion = true
+		} else {
+			return fmt.Errorf("show question should be within [min=0, max=1], please check if `GOSO_SHOW_QUESTIONS` is set correctly")
+		}
+	}
 	flags := flag.NewFlagSet(app, flag.ExitOnError)
 	flags.StringVar(&conf.Lexer, "l", lex, "The name of Chroma lexer. See https://github.com/alecthomas/chroma/tree/master/lexers/embedded")
 	flags.StringVar(&conf.Style, "s", style, "The name of Chroma style. See https://xyproto.github.io/splash/docs/")
